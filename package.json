@@ -10,7 +10,7 @@
     "test": "lerna run test",
     "clean": "lerna run clean",
     "build": "lerna run build",
-    "publish:lerna": "lerna run publish -y --canary --preid alpha --dist-tag=alpha",
+    "publish:lerna": "lerna publish -y --canary --preid alpha --dist-tag=alpha",
     "update-version": "lerna publish --skip-git --skip-npm --force-publish '*'",
     "check-packages": "yarn clean && yarn compile && yarn test && yarn lint"
   },
