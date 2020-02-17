@@ -39,7 +39,6 @@
     "redis": "^3.0.2"
   },
   "devDependencies": {
-
   },
   "publishConfig": {
     "access": "public"

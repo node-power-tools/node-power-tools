@@ -1,6 +1,9 @@
 
 version: 2.1
 
+defaults:
+  working_directory: ~/repo
+
 jobs:
   npt-publish:
 
@@ -18,7 +21,7 @@ jobs:
 
       - run:
           name: Setup .npmrc credentials
-          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/.npmrc
+          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/repo/.npmrc
 
       - run: yarn install
       # Bootstrap Lerna package dependencies
