@@ -9,11 +9,6 @@ jobs:
 
     working_directory: ~/repo
 
-    dependencies:
-      post:
-        # Bootstrap Lerna package dependencies
-        - npm run bootstrap
-
     steps:
       - checkout
 
@@ -28,6 +23,8 @@ jobs:
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/.npmrc
 
       - run: npm install
+      # Bootstrap Lerna package dependencies
+      - run: npm run bootstrap
       # Run package tests
       - run: ./node_modules/lerna/bin/lerna.js run test
       # Run package builds
