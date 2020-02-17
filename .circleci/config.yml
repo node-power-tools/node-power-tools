@@ -44,7 +44,7 @@ workflows:
   version: 2
   npt-publish:
     jobs:
-      - publish:
+      - npt-publish:
         filters:
           branches:
             ignore: /.*/
