@@ -1,15 +1,15 @@
 {
   "name": "@node-power-tools/redis-tools",
-  "version": "0.0.1-alpha.1",
+  "version": "0.0.1-alpha.34",
   "description": "Redis tools for use with NodeJS",
   "keywords": [
     "redis"
   ],
   "repository": "https://github.com/bsantare/npt",
   "license": "MIT",
-  "main": "build/main/index.js",
-  "module": "build/module/index.js",
-  "typings": "build/main/index.d.ts",
+  "main": "dist/index.js",
+  "module": "dist/module/index.js",
+  "typings": "dist/index.d.ts",
   "files": [
     "lib"
   ],
