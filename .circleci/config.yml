@@ -24,13 +24,13 @@ jobs:
 
       - run: npm install
       # Bootstrap Lerna package dependencies
-      - run: npm run bootstrap
+      - run: yarn bootstrap
       # Run package tests
-      - run: npm run test
+      - run: yarn test
       # Run package builds
-      - run: npm run build
+      - run: yarn build
       # Publish changed packages
-      - run: npm run publish
+      - run: yarn publish
 
       - save_cache:
           paths:
