@@ -5,6 +5,7 @@
   "keywords": [
     "redis"
   ],
+  "private": false,
   "repository": "https://github.com/bsantare/npt/redis-tools",
   "license": "MIT",
   "main": "build/main/index.js",
