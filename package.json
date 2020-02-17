@@ -7,10 +7,10 @@
   "scripts": {
     "bootstrap": "lerna bootstrap",
     "pretest": "eslint packages",
-    "test": "lerna --use-workspaces run test",
-    "build": "lerna --use-workspaces run build",
-    "publish": "lerna --use-workspaces run publish",
-    "update-version": "lerna --use-workspaces publish --skip-git --skip-npm --force-publish '*'",
+    "test": "lerna run test",
+    "build": "lerna run build",
+    "publish": "lerna run publish",
+    "update-version": "lerna publish --skip-git --skip-npm --force-publish '*'",
     "check-packages": "yarn clean && yarn compile && yarn test && yarn lint"
   },
   "devDependencies": {
