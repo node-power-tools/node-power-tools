@@ -8,7 +8,7 @@
   "repository": "https://github.com/bsantare/npt",
   "license": "MIT",
   "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "types": "dist/index.d.ts",
   "directories": {
     "lib": "lib"
   },
