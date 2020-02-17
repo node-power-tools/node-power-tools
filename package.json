@@ -9,7 +9,7 @@
     "pretest": "eslint packages",
     "test": "lerna run test",
     "build": "lerna run build",
-    "publish-lerna": "lerna run publish",
+    "publish:lerna": "lerna run publish",
     "update-version": "lerna publish --skip-git --skip-npm --force-publish '*'",
     "check-packages": "yarn clean && yarn compile && yarn test && yarn lint"
   },
