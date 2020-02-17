@@ -28,7 +28,7 @@ jobs:
       # Run package builds
       - run: yarn build
       # Publish changed packages
-      - run: yarn publish
+      - run: yarn publish-lerna
 
       - save_cache:
           paths:
