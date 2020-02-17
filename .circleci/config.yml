@@ -1,5 +1,6 @@
 
-version: 2
+version: 2.1
+
 jobs:
   publish:
 
@@ -20,23 +21,24 @@ jobs:
       - run:
           name: Setup .npmrc credentials
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/.npmrc
-      - run: npm ci
-      - run: npm run test
-      - run: npm run build
-      - run: npm publish
+
+      - run: lerna bootstrap
+      - run: lerna run test
+      - run: lerna run build
+      - run: lerna publish
 
       - save_cache:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
 
-workflows:
-  version: 2
-  publish:
-    jobs:
-      - publish:
-        filters:
-          branches:
-            ignore: /.*/
-          tags:
-            only: /^v.*/
+#workflows:
+#  version: 2
+#  publish:
+#    jobs:
+#      - publish:
+#        filters:
+#          branches:
+#            ignore: /.*/
+#          tags:
+#            only: /^v.*/
