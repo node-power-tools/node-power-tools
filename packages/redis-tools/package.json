@@ -8,15 +8,20 @@
   "repository": "https://github.com/bsantare/npt",
   "license": "MIT",
   "main": "dist/index.js",
-  "module": "dist/module/index.js",
   "typings": "dist/index.d.ts",
+  "directories": {
+    "lib": "lib"
+  },
   "files": [
     "lib"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc",
     "build:check": "tsc --noEmit",
-    "clean": "rimraf build/*",
+    "clean": "rimraf dist/*",
     "fix:eslint": "eslint --fix \"**/*.{ts,tsx,js}\"",
     "fix:prettier": "prettier \"src/**/*.ts\" --write",
     "publish": "yarn publish",
@@ -37,8 +42,5 @@
   "optionalDependencies": {
     "handy-redis": "^1.8.0",
     "redis": "^3.0.2"
-  },
-  "publishConfig": {
-    "access": "public"
   }
 }

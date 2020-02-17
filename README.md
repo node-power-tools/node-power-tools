@@ -32,3 +32,6 @@ Tools to make your life as a NodeJS developer a little better.
 
 ## Development
 ### Creating a new monorepo module
+```zsh
+lerna create doctor
+```
