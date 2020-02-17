@@ -1,0 +1,26 @@
+name: Publish with Lerna
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  Publish_Workflow:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v1.0.0
+      - name: Install dependencies
+        run: yarn
+      - name: Build
+        run: yarn build
+      - name: Authenticate with Registry
+        run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >>~/.npmrc
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Publish with Lerna
+        run: yarn publish:alpha
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
