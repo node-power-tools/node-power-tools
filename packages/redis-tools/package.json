@@ -9,11 +9,8 @@
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "directories": {
-    "lib": "lib"
-  },
   "files": [
-    "lib"
+    "/dist"
   ],
   "publishConfig": {
     "access": "public"
