@@ -2,7 +2,7 @@
   "name": "root",
   "private": true,
   "scripts": {
-    "bootstrap": "lerna bootstrap",
+    "bootstrap": "lerna bootstrap --force-local --hoist --ci -- --production=false",
     "pretest": "eslint packages",
     "test": "lerna run test",
     "build": "lerna run build",
