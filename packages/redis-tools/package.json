@@ -1,5 +1,5 @@
 {
-  "name": "redis-tools",
+  "name": "@npt/redis-tools",
   "version": "0.0.0",
   "description": "Redis tools for use with NodeJS",
   "keywords": [
@@ -19,6 +19,7 @@
     "clean": "rimraf build/*",
     "fix:eslint": "eslint --fix \"**/*.{ts,tsx,js}\"",
     "fix:prettier": "prettier \"src/**/*.ts\" --write",
+    "publish": "yarn publish",
     "sort:packages": "npx sort-package-json",
     "test": "yarn test:unit",
     "test:unit": "jest"
