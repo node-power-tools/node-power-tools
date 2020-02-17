@@ -18,7 +18,7 @@ jobs:
 
       - run:
           name: Setup .npmrc credentials
-          command: echo "//registry.yarnpkg.com/:_authToken=$NPM_TOKEN" >>~/.npmrc
+          command: echo "https://registry.yarnpkg.com/:_authToken=$NPM_TOKEN" >>~/.npmrc
 
       - run: yarn install
       # Bootstrap Lerna package dependencies
