@@ -26,11 +26,11 @@ jobs:
       # Bootstrap Lerna package dependencies
       - run: npm run bootstrap
       # Run package tests
-      - run: ./node_modules/lerna/bin/lerna.js run test
+      - run: npm run test
       # Run package builds
-      - run: ./node_modules/lerna/bin/lerna.js run build
+      - run: npm run build
       # Publish changed packages
-      - run: ./node_modules/lerna/bin/lerna.js publish
+      - run: npm run publish
 
       - save_cache:
           paths:

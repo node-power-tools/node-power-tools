@@ -5,7 +5,8 @@
     "bootstrap": "lerna bootstrap --hoist",
     "pretest": "eslint packages",
     "test": "lerna run test",
-    "build": "lerna run build"
+    "build": "lerna run build",
+    "publish": "lerna run publish"
   },
   "devDependencies": {
     "@types/jest": "^24.9.1",
