@@ -2,7 +2,7 @@
 version: 2.1
 
 jobs:
-  publish:
+  npt-publish:
 
     docker:
       - image: circleci/node:10
@@ -42,7 +42,7 @@ jobs:
 
 workflows:
   version: 2
-  publish:
+  npt-publish:
     jobs:
       - publish:
         filters:
