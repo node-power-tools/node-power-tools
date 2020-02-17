@@ -22,9 +22,14 @@ jobs:
           name: Setup .npmrc credentials
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/.npmrc
 
+      - run: npm install
+      # Bootstrap Lerna package dependencies
       - run: npm run bootstrap
+      # Run package tests
       - run: lerna run test
+      # Run package builds
       - run: lerna run build
+      # Publish changed packages
       - run: lerna publish
 
       - save_cache:
