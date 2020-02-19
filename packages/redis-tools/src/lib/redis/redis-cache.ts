@@ -7,7 +7,6 @@ import {
   DEFAULT_CACHE_CONFIGURATION,
   ReadThroughRequest
 } from '../cache'
-import { createLoggerWithFileContext } from '../../util/log'
 import { RedisLockFactory } from './redis-lock-factory'
 import { Optional } from '../../util/types'
 import { buildRegionPrefixedCacheKey } from '../cache-codec'
@@ -30,13 +29,14 @@ export interface RedisCache extends Cache {}
  * https://github.com/gosquared/redis-clustr as your Redis client library.
  */
 export class RedisCacheImpl implements RedisCache {
-  readonly _log = createLoggerWithFileContext(__filename)
   private readonly _redisClient: IHandyRedis
   private readonly _redisLockFactory: RedisLockFactory
+  private readonly _log: Logger
 
-  constructor(redisClient: IHandyRedis, redisLockFactory: RedisLockFactory) {
+  constructor(redisClient: IHandyRedis, redisLockFactory: RedisLockFactory, logger: Logger) {
     this._redisClient = redisClient
     this._redisLockFactory = redisLockFactory
+    this._log = logger
   }
 
   /**

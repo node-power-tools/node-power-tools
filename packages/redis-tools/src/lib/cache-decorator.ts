@@ -1,4 +1,3 @@
-import { createLoggerWithFileContext } from '../util/log'
 import { CacheError } from './errors'
 import {
   Cache,
@@ -7,8 +6,7 @@ import {
   CacheKeyGenStrategy,
   withReadThroughCache
 } from './cache'
-
-const log = createLoggerWithFileContext(__filename)
+import { Logger } from 'winston'
 
 export type CacheDecoratorFunction = (cacheKeyGenStrategy?: CacheKeyGenStrategy, keyGenArgs?: any[], regionName?: string) => Function
 export type CacheConfigLookupFunction = (cacheName: string) => NonNullable<CacheConfig>
@@ -18,8 +16,9 @@ export type CacheConfigLookupFunction = (cacheName: string) => NonNullable<Cache
  *
  * @param cache The cache to use
  * @param cacheConfigLookupFunction Function that provides lookup for cache configuration
+ * @param logger Logger to use
  */
-export function buildCacheDecorator(cache: Cache, cacheConfigLookupFunction: CacheConfigLookupFunction): CacheDecoratorFunction {
+export function buildCacheDecorator(cache: Cache, cacheConfigLookupFunction: CacheConfigLookupFunction, logger: Logger): CacheDecoratorFunction {
   /**
    * A decorator to wrap a method with read through caching
    *
@@ -40,7 +39,7 @@ export function buildCacheDecorator(cache: Cache, cacheConfigLookupFunction: Cac
         // Bind "this" to the callback
         const boundOriginalFunction = originalFunction.bind(this)
         try {
-          log.debug(`Attempting to read through cache in decorator for key ${cacheKey}`, { methodName })
+          logger.debug(`Attempting to read through cache in decorator for key ${cacheKey}`, { methodName })
           return await withReadThroughCache(cache, {
             cacheRegion: cacheRegionName,
             cacheKey: cacheKey,
