@@ -1,12 +1,13 @@
 import * as path from 'path'
-import { Logger, LoggerOptions } from 'winston'
+import winston, { Logger, LoggerOptions } from 'winston'
 
 /**
  * Create a {@link Logger} with configuration from config file.
+ *
  * @param options optional {@link LoggerOptions} for configuration.
  */
 export const createLogger = (options?: LoggerOptions): Logger => {
-  const logger = createLogger(options || {})
+  const logger = winston.createLogger(options || {})
 
   if (options) {
     logger.configure(options)
@@ -17,6 +18,7 @@ export const createLogger = (options?: LoggerOptions): Logger => {
 
 /**
  * Create a {@link Logger} with a child context.
+ *
  * @param additionalContext The child context
  * @param options optional {@link LoggerOptions} for configuration.
  */
@@ -24,6 +26,7 @@ export const createContextLogger = (additionalContext: any, options?: LoggerOpti
 
 /**
  * Create a {@link Logger} with a child context that carries context of the file in which it is executing
+ *
  * @param fileNameWithPath The full path to the file.
  * @param additionalContext any additional context
  * @param options optional {@link LoggerOptions} for configuration.
@@ -37,6 +40,7 @@ export const createLoggerWithFileContext = (fileNameWithPath: string, additional
 
 /**
  * Extract the file name from a given path.
+ *
  * @param fileNameWithPath the fully qualified file name
  */
 export const extractShortFileName = (fileNameWithPath: string): string | undefined => {
