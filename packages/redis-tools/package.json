@@ -36,11 +36,12 @@
     "@types/verror": "^1.10.3",
     "reflect-metadata": "^0.1.13",
     "uuid": "^3.4.0",
-    "winston": "^3.2.1",
-    "verror": "^1.10.0"
+    "verror": "^1.10.0",
+    "winston": "^3.2.1"
   },
   "optionalDependencies": {
     "handy-redis": "^1.8.0",
     "redis": "^3.0.2"
-  }
+  },
+  "gitHead": "f0ed85bfd10351398473f40f6c92f45cc309a849"
 }
