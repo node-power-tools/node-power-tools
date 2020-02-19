@@ -1,0 +1,43 @@
+{
+  "name": "@node-power-tools/redis-tools",
+  "version": "0.0.1-alpha.34",
+  "description": "Redis tools for use with NodeJS",
+  "keywords": [
+    "redis"
+  ],
+  "repository": "https://github.com/bsantare/npt",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "/dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc",
+    "build:check": "tsc --noEmit",
+    "clean": "rimraf dist/*",
+    "fix:eslint": "eslint --fix \"**/*.{ts,tsx,js}\"",
+    "fix:prettier": "prettier \"src/**/*.ts\" --write",
+    "publish": "yarn publish",
+    "sort:packages": "npx sort-package-json",
+    "test": "yarn test:unit",
+    "test:unit": "jest"
+  },
+  "prettier": {
+    "singleQuote": true
+  },
+  "dependencies": {
+    "@types/redis": "^2.8.15",
+    "@types/uuid": "^3.4.7",
+    "reflect-metadata": "^0.1.13",
+    "uuid": "^3.4.0",
+    "winston": "^3.2.1"
+  },
+  "optionalDependencies": {
+    "handy-redis": "^1.8.0",
+    "redis": "^3.0.2"
+  }
+}
