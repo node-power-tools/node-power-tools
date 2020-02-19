@@ -408,6 +408,11 @@
     "@types/yargs" "^15.0.0"
     chalk "^3.0.0"
 
+"@js-joda/core@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@js-joda/core/-/core-2.0.0.tgz#e9a351ee6feb91262770e2a3d085aa0219ad6afb"
+  integrity sha512-OWm/xa9O9e4ugzNHoRT3IsXZZYfaV6Ia1aRwctOmCQ2GYWMnhKBzMC1WomqCh/oGxEZKNtPy5xv5//VIAOgMqw==
+
 "@lerna/add@3.20.0":
   version "3.20.0"
   resolved "https://registry.yarnpkg.com/@lerna/add/-/add-3.20.0.tgz#bea7edf36fc93fb72ec34cb9ba854c48d4abf309"
@@ -1321,6 +1326,11 @@
   version "3.4.7"
   resolved "https://registry.yarnpkg.com/@types/uuid/-/uuid-3.4.7.tgz#51d42247473bc00e38cc8dfaf70d936842a36c03"
   integrity sha512-C2j2FWgQkF1ru12SjZJyMaTPxs/f6n90+5G5qNakBxKXjTBc/YTSelHh4Pz1HUDwxFXD9WvpQhOGCDC+/Y4mIQ==
+
+"@types/verror@^1.10.3":
+  version "1.10.3"
+  resolved "https://registry.yarnpkg.com/@types/verror/-/verror-1.10.3.tgz#8be16b0e750018fd4e2e4a766b8f2351d8b5df6a"
+  integrity sha512-7Jz0MPsW2pWg5dJfEp9nJYI0RDCYfgjg2wIo5HfQ8vOJvUq0/BxT7Mv2wNQvkKBmV9uT++6KF3reMnLmh/0HrA==
 
 "@types/yargs-parser@*":
   version "15.0.0"
@@ -6084,12 +6094,15 @@ redis-parser@^3.0.0:
     redis-errors "^1.0.0"
 
 "redis-tools@file:packages/redis-tools":
-  version "0.0.0"
+  version "0.0.1-alpha.34"
   dependencies:
+    "@js-joda/core" "^2.0.0"
     "@types/redis" "^2.8.15"
     "@types/uuid" "^3.4.7"
+    "@types/verror" "^1.10.3"
     reflect-metadata "^0.1.13"
     uuid "^3.4.0"
+    verror "^1.10.0"
     winston "^3.2.1"
   optionalDependencies:
     handy-redis "^1.8.0"
@@ -7288,7 +7301,7 @@ validate-npm-package-name@^3.0.0:
   dependencies:
     builtins "^1.0.3"
 
-verror@1.10.0:
+verror@1.10.0, verror@^1.10.0:
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/verror/-/verror-1.10.0.tgz#3a105ca17053af55d6e270c1f8288682e18da400"
   integrity sha1-OhBcoXBTr1XW4nDB+CiGguGNpAA=
