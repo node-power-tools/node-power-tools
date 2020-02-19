@@ -1,12 +1,12 @@
-import {createLoggerWithFileContext} from "../util/log";
-import {CacheError} from "./errors";
+import { createLoggerWithFileContext } from '../util/log'
+import { CacheError } from './errors'
 import {
   Cache,
   CacheConfig,
   CacheKeyGenFunctions,
   CacheKeyGenStrategy,
   withReadThroughCache
-} from "./cache";
+} from './cache'
 
 const log = createLoggerWithFileContext(__filename)
 

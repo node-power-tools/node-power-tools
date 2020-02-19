@@ -1,7 +1,7 @@
-import {createLoggerWithFileContext} from "../util/log";
-import {LockFactory} from "./lock-factory";
-import {withLock} from "./lock";
-import {LockError} from "./errors";
+import { createLoggerWithFileContext } from '../util/log'
+import { LockFactory } from './lock-factory'
+import { withLock } from './lock'
+import { LockError } from './errors'
 
 const log = createLoggerWithFileContext(__filename)
 

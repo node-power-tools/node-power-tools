@@ -1,8 +1,8 @@
 import { IHandyRedis } from 'handy-redis'
-import {LockFactory} from "../lock-factory";
-import {Lock, LockConfig} from "../lock";
-import {SimpleRedisLockImpl} from "./redis-lock";
-import {createLoggerWithFileContext} from "../../util/log";
+import { LockFactory } from '../lock-factory'
+import { Lock, LockConfig } from '../lock'
+import { SimpleRedisLockImpl } from './redis-lock'
+import { createLoggerWithFileContext } from '../../util/log'
 
 export interface RedisLockFactory extends LockFactory {}
 
