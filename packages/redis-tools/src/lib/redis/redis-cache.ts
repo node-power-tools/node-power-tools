@@ -6,13 +6,13 @@ import {
   CacheConfig,
   DEFAULT_CACHE_CONFIGURATION,
   ReadThroughRequest
-} from "../cache";
-import {createLoggerWithFileContext} from "../../util/log";
-import {RedisLockFactory} from "./redis-lock-factory";
-import {Optional} from "../../util/types";
-import {buildRegionPrefixedCacheKey} from "../cache-codec";
-import {withLock} from "../lock";
-import {CacheError} from "../errors";
+} from '../cache'
+import { createLoggerWithFileContext } from '../../util/log'
+import { RedisLockFactory } from './redis-lock-factory'
+import { Optional } from '../../util/types'
+import { buildRegionPrefixedCacheKey } from '../cache-codec'
+import { withLock } from '../lock'
+import { CacheError } from '../errors'
 
 const CACHE_REGION_PREFIX = 'CACHE_'
 const DEFAULT_CACHE_REGION_NAME = `${CACHE_REGION_PREFIX}DEFAULT`

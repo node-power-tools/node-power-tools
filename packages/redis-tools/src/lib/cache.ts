@@ -1,7 +1,7 @@
 import * as crypto from 'crypto'
-import {AsyncFunction, Optional} from "../util/types";
-import {CacheError} from "./errors";
-import {SimpleJsonCodec} from "./cache-codec";
+import { AsyncFunction, Optional } from '../util/types'
+import { CacheError } from './errors'
+import { SimpleJsonCodec } from './cache-codec'
 
 /**
  * Cache serialization codec.

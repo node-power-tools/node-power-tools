@@ -2,9 +2,9 @@ import { ChronoUnit, Instant } from '@js-joda/core'
 import { IHandyRedis } from 'handy-redis'
 import uuid from 'uuid'
 import { Logger } from 'winston'
-import {Lock, LockConfig} from "../lock";
-import {LockError} from "../errors";
-import {sleep} from "../../util/sleep";
+import { Lock, LockConfig } from '../lock'
+import { LockError } from '../errors'
+import { sleep } from '../../util/sleep'
 
 export const REDIS_LOCK_PREFIX = 'LOCK_'
 const SUCCESS_RES = 'OK'

@@ -1,5 +1,5 @@
-import * as path from "path";
-import {Logger, LoggerOptions} from "winston";
+import * as path from 'path'
+import { Logger, LoggerOptions } from 'winston'
 
 /**
  * Create a {@link Logger} with configuration from config file.
