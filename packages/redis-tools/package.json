@@ -1,6 +1,6 @@
 {
   "name": "@node-power-tools/redis-tools",
-  "version": "0.0.1-alpha.5+d8ad35e",
+  "version": "0.0.1-alpha.7",
   "description": "Redis tools for use with NodeJS",
   "keywords": [
     "redis"
