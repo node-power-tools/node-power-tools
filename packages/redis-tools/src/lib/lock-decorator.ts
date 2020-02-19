@@ -1,9 +1,7 @@
-import { createLoggerWithFileContext } from '../util/log'
 import { LockFactory } from './lock-factory'
 import { withLock } from './lock'
 import { LockError } from './errors'
-
-const log = createLoggerWithFileContext(__filename)
+import { Logger } from 'winston'
 
 type LockDecoratorFunction = (lockKey: string, lockTtlSeconds: number) => Function
 
@@ -11,8 +9,9 @@ type LockDecoratorFunction = (lockKey: string, lockTtlSeconds: number) => Functi
  * Build a lock decorator function
  *
  * @param lockFactory The lock factory to use for the generated decorator
+ * @param logger Log object to use
  */
-export function buildLockDecorator(lockFactory: LockFactory): LockDecoratorFunction {
+export function buildLockDecorator(lockFactory: LockFactory, logger: Logger): LockDecoratorFunction {
   /**
    * A decorator factory for decorators that wrap a methods with a lock
    *
@@ -29,7 +28,7 @@ export function buildLockDecorator(lockFactory: LockFactory): LockDecoratorFunct
         // Bind "this" to the callback
         const boundOriginalFunction = originalFunction.bind(this)
         try {
-          log.debug(`Attempting to acquire lock in decorator for key ${lock.getLockKey()}`, { methodName })
+          logger.debug(`Attempting to acquire lock in decorator for key ${lock.getLockKey()}`, { methodName })
           return await withLock(lock, boundOriginalFunction)(...args)
         } catch (e) {
           throw new LockError(`Error acquiring lock in decorator for key ${lock.getLockKey()}: ${e.message}`, e)
