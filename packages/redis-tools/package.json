@@ -30,11 +30,14 @@
     "singleQuote": true
   },
   "dependencies": {
+    "@js-joda/core": "^2.0.0",
     "@types/redis": "^2.8.15",
     "@types/uuid": "^3.4.7",
+    "@types/verror": "^1.10.3",
     "reflect-metadata": "^0.1.13",
     "uuid": "^3.4.0",
-    "winston": "^3.2.1"
+    "winston": "^3.2.1",
+    "verror": "^1.10.0"
   },
   "optionalDependencies": {
     "handy-redis": "^1.8.0",
