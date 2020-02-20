@@ -29,9 +29,6 @@ dist
 
 .DS_Store
 
-node_modules
-
-build
-
 .idea
 
+/packages/redis-tools/package-lock.json

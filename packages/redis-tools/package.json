@@ -3,7 +3,11 @@
   "version": "0.0.1-alpha.8+a20b668",
   "description": "Redis tools for use with NodeJS",
   "keywords": [
-    "redis"
+    "redis",
+    "caching",
+    "mutex",
+    "lock",
+    "read through"
   ],
   "repository": "https://github.com/bsantare/node-power-tools",
   "license": "MIT",
@@ -19,8 +23,7 @@
     "build": "tsc",
     "build:check": "tsc --noEmit",
     "clean": "rimraf dist/*",
-    "fix:eslint": "eslint --fix \"**/*.{ts,tsx,js}\"",
-    "fix:prettier": "prettier \"src/**/*.ts\" --write",
+    "fix:eslint": "eslint --fix \"src/**/*.{ts,js}\"",
     "publish": "yarn publish",
     "sort:packages": "npx sort-package-json",
     "test": "yarn test:unit",
@@ -31,7 +34,6 @@
   },
   "dependencies": {
     "@js-joda/core": "^2.0.0",
-    "@types/redis": "^2.8.15",
     "@types/uuid": "^3.4.7",
     "@types/verror": "^1.10.3",
     "reflect-metadata": "^0.1.13",
@@ -40,8 +42,7 @@
     "winston": "^3.2.1"
   },
   "optionalDependencies": {
-    "handy-redis": "^1.8.0",
-    "redis": "^3.0.2"
+    "handy-redis": "^1.8.0"
   },
   "gitHead": "a20b668519c3612541f7a3333eb3885dff53e919"
 }

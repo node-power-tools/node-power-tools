@@ -1,3 +1,3 @@
-export * from './lib/number'
-export * from './lib/index'
-export * from './lib/redis/index'
+export * from './cache'
+export * from './cache/redis'
+export * from './util'

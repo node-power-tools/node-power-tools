@@ -4,10 +4,10 @@ import uuid from 'uuid'
 import { Logger } from 'winston'
 import { Lock, LockConfig } from '../lock'
 import { LockError } from '../errors'
-import { sleep } from '../../util/sleep'
+import { sleep } from '../../util'
 
 export const REDIS_LOCK_PREFIX = 'LOCK_'
-const SUCCESS_RES = 'OK'
+export const SUCCESS_RES = 'OK'
 
 // Redis Lua command to remove the lock key if the lock owner is the caller
 const DELETE_KEY_IF_VALUE_MATCH_CMD = `

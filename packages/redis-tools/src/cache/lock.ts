@@ -49,7 +49,10 @@ export type LockConfig = {
  * @param lock The lock object to use
  * @param asyncFn The function to execute once the lock is successfully acquired
  */
-export const withLock = <FT extends (...args: any[]) => any>(lock: Lock, asyncFn: FT): (...funcArgs: Parameters<FT>) => Promise<ReturnType<FT>> => {
+export const withLock = <FT extends (...args: any[]) => any>(
+  lock: Lock,
+  asyncFn: FT
+): ((...funcArgs: Parameters<FT>) => Promise<ReturnType<FT>>) => {
   return async (...args: Parameters<FT>): Promise<ReturnType<FT>> => {
     try {
       // Acquire the lock

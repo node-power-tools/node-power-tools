@@ -10,6 +10,7 @@
     "test": "lerna run test",
     "clean": "lerna run clean",
     "build": "lerna run build",
+    "fix:eslint": "lerna run fix:eslint",
     "publish:lerna": "lerna publish -y --canary --preid alpha --dist-tag=alpha",
     "update-version": "lerna publish --skip-git --skip-npm --force-publish '*'",
     "check-packages": "yarn clean && yarn compile && yarn test && yarn lint",
@@ -34,6 +35,7 @@
     "prettier": "^1.19.1",
     "rimraf": "^3.0.0",
     "ts-jest": "^25.2.0",
+    "ts-node": "^8.6.2",
     "typescript": "^3.7.5",
     "yarn": "^1.22.0"
   },

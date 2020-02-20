@@ -2,10 +2,13 @@ import VError from 'verror'
 
 export abstract class NPTError extends VError {
   protected constructor(name: string, message: string, cause?: Error) {
-    super({
-      name,
-      cause,
-    }, message)
+    super(
+      {
+        name,
+        cause
+      },
+      message
+    )
     Error.captureStackTrace(this, this.constructor)
   }
 }

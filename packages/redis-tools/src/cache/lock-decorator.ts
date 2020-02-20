@@ -19,7 +19,11 @@ export function buildLockDecorator(lockFactory: LockFactory, logger: Logger): Lo
    * @param lockTtlSeconds The lock TTL
    */
   return function(lockKey: string, lockTtlSeconds: number) {
-    return function(_target: Record<string, any>, methodName: string, propertyDesciptor: PropertyDescriptor): PropertyDescriptor {
+    return function(
+      _target: Record<string, any>,
+      methodName: string,
+      propertyDesciptor: PropertyDescriptor
+    ): PropertyDescriptor {
       const originalFunction = propertyDesciptor.value
 
       propertyDesciptor.value = async function(this: any, ...args: any[]) {
