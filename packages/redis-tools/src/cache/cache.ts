@@ -1,5 +1,5 @@
 import * as crypto from 'crypto'
-import { AsyncFunction, Optional } from '../util/types'
+import { AsyncFunction, Optional } from '../util'
 import { CacheError } from './errors'
 import { SimpleJsonCodec } from './cache-codec'
 
@@ -7,8 +7,8 @@ import { SimpleJsonCodec } from './cache-codec'
  * Cache serialization codec.
  */
 export interface CacheCodec {
-  encode: <T> (rawObject: T) => string;
-  decode: <T> (encodedObject: string) => T;
+  encode: <T>(rawObject: T) => string;
+  decode: <T>(encodedObject: string) => T;
 }
 
 /**
@@ -37,7 +37,9 @@ export interface CacheConfig {
 /**
  * A sparse cache configuration
  */
-export type PartialCacheConfig = NonNullable<Pick<CacheConfig, 'ttlSeconds' | 'doubleCheckedPut' >> | Pick<CacheConfig, 'doubleCheckLockTtlSeconds' | 'codec'>
+export type PartialCacheConfig =
+  | NonNullable<Pick<CacheConfig, 'ttlSeconds' | 'doubleCheckedPut'>>
+  | Pick<CacheConfig, 'doubleCheckLockTtlSeconds' | 'codec'>
 
 /**
  * A default cache configuration
@@ -76,7 +78,7 @@ export interface AsyncFunctionInvocation<T> {
 /**
  * A read through request
  */
-export interface ReadThroughRequest<T> extends CacheRequest{
+export interface ReadThroughRequest<T> extends CacheRequest {
   fnInvocation: AsyncFunctionInvocation<T>;
 }
 
@@ -91,6 +93,23 @@ export interface Cache {
    * @return The value returned from the cache or calculated via {@link ReadThroughRequest#readFn}
    */
   readThrough<T>(readThroughRequest: ReadThroughRequest<T>): Promise<Optional<T>>;
+
+  /**
+   * Invalidate a cache region.
+   *
+   * @param cacheRegionName The cache region to invalidate
+   * @return true if invalidated, false otherwise
+   */
+  invalidateCacheRegion(cacheRegionName: string): Promise<boolean>;
+
+  /**
+   * Invalidate a cache key.
+   *
+   * @param cacheRegionName The cache region name for the cache key to invalidate
+   * @param cacheKey The cache key to invalidate
+   * @return true if invalidated, false otherwise
+   */
+  invalidateCacheKey(cacheRegionName: string, cacheKey: string): Promise<boolean>;
 }
 
 export enum CacheKeyGenStrategy {
@@ -128,9 +147,7 @@ export const CacheKeyGenFunctions = {
     if (keyGenArgs.length == 0) {
       throw new CacheError('keyGenArgs must contain at least one argument index for strategy PICK')
     }
-    return args
-      .filter((_val, index) => keyGenArgs.indexOf(index) >= 0)
-      .join('_')
+    return args.filter((_val, index) => keyGenArgs.indexOf(index) >= 0).join('_')
   }
 }
 
@@ -140,14 +157,18 @@ export const CacheKeyGenFunctions = {
  * @param cache The cache object to use
  * @param cacheRequest The cache request
  */
-export function withReadThroughCache<FT extends(...args: any[]) => any>
-(cache: Cache, cacheRequest: ReadThroughRequest<ReturnType<FT>>): (...funcArgs: Parameters<FT>) =>
-Promise<Optional<ReturnType<FT>>> {
+export function withReadThroughCache<FT extends(...args: any[]) => any>(
+  cache: Cache,
+  cacheRequest: ReadThroughRequest<ReturnType<FT>>
+): (...funcArgs: Parameters<FT>) => Promise<Optional<ReturnType<FT>>> {
   return async (): Promise<Optional<ReturnType<FT>>> => {
     try {
       return await cache.readThrough(cacheRequest)
     } catch (e) {
-      throw new CacheError(`Error during read through attempt for read through request for key ${cacheRequest.cacheKey}: ${e.message}`, e)
+      throw new CacheError(
+        `Error during read through attempt for read through request for key ${cacheRequest.cacheKey}: ${e.message}`,
+        e
+      )
     }
   }
 }
