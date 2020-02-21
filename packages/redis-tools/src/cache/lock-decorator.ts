@@ -35,7 +35,7 @@ export function buildLockDecorator(lockFactory: LockFactory, logger: Logger): Lo
           logger.debug(`Attempting to acquire lock in decorator for key ${lock.getLockKey()}`, { methodName })
           return await withLock(lock, boundOriginalFunction)(...args)
         } catch (e) {
-          throw new LockError(`Error acquiring lock in decorator for key ${lock.getLockKey()}: ${e.message}`, e)
+          throw new LockError(`Error acquiring lock in decorator for key ${lock.getLockKey()}`, e)
         }
       }
 

@@ -1,16 +1,26 @@
 import { IHandyRedis } from 'handy-redis'
 import { Logger } from 'winston'
-import { AsyncFunctionInvocation, Cache, CacheConfig, DEFAULT_CACHE_CONFIGURATION, ReadThroughRequest } from '../cache'
+import { Optional } from '../../util'
+import {
+  AsyncFunctionInvocation,
+  Cache,
+  CacheConfig,
+  DEFAULT_CACHE_CONFIGURATION,
+  PutRequest,
+  ReadThroughRequest
+} from '../cache'
 import { CacheKeyEntry, CacheManager } from '../cache-manager'
 import { RedisLockFactory } from './redis-lock-factory'
-import { Optional } from '../../util'
 import {
   buildCacheKeyRegionPrefix,
   buildRegionPrefixedCacheKey,
-  extractCacheRegionNameFromCacheKey, extractKeyFromRegionPrefixedCacheKey
+  CacheCodec,
+  codecRegistry,
+  extractCacheRegionNameFromCacheKey,
+  extractKeyFromRegionPrefixedCacheKey
 } from '../cache-codec'
 import { withLock } from '../lock'
-import { CacheError } from '../errors'
+import { CacheError, toErrorStack } from '../errors'
 
 const CACHE_REGION_PREFIX = 'CACHE_'
 const DEFAULT_CACHE_REGION_NAME = `${CACHE_REGION_PREFIX}DEFAULT`
@@ -39,6 +49,49 @@ export class RedisCacheImpl implements RedisCache {
   }
 
   /**
+   * Spread the provided cache configuration over the default configuration
+   *
+   * @param cacheConfig The optional partial cache configuration
+   */
+  private static mergeCacheConfigWithDefault(cacheConfig?: Partial<CacheConfig>): CacheConfig {
+    return {
+      ...DEFAULT_CACHE_CONFIGURATION,
+      ...(cacheConfig || {})
+    }
+  }
+
+  /**
+   * Get from the cache
+   *
+   * @param cacheKey The cache
+   * @param cacheRegion The optional cache region name - will be defaulted
+   *        if not provided
+   */
+  public async get<T>(cacheKey: string, cacheRegion: string = DEFAULT_CACHE_REGION_NAME): Promise<Optional<T>> {
+    const redisCacheKey = buildRegionPrefixedCacheKey(cacheRegion, cacheKey)
+    try {
+      return await fetchFromCache(this._redisClient, redisCacheKey)
+    } catch (e) {
+      throw new CacheError(`Error attempting to get value from cache for region ${cacheRegion} and key ${cacheKey}`, e)
+    }
+  }
+
+  /**
+   * Put a value into the cache
+   *
+   * @param putRequest The put request
+   */
+  public async put<T>(putRequest: PutRequest<T>): Promise<void> {
+    const redisCacheKey = buildRegionPrefixedCacheKey(putRequest.cacheRegion || DEFAULT_CACHE_REGION_NAME, putRequest.cacheKey)
+    const mergedCacheConfig = RedisCacheImpl.mergeCacheConfigWithDefault(putRequest.cacheConfig)
+    try {
+      return await setInCache(this._log, this._redisClient, redisCacheKey, mergedCacheConfig, putRequest.value)
+    } catch (e) {
+      throw new CacheError(`Error attempting to set value in Redis for region ${putRequest.cacheRegion} and key ${putRequest.cacheKey}`, e)
+    }
+  }
+
+  /**
    * Read through a cache backed by Redis
    *
    * @param readThroughRequest A read through request
@@ -49,41 +102,32 @@ export class RedisCacheImpl implements RedisCache {
     cacheKey,
     fnInvocation,
     cacheConfig = {}
-  }: ReadThroughRequest<T>): Promise<Optional<T>> {
+  }: ReadThroughRequest<T>): Promise<T> {
     // Spread the default cache options to support sparsely populated cache options
-    const mergedCacheConfig = {
-      ...DEFAULT_CACHE_CONFIGURATION,
-      ...(cacheConfig || {})
-    }
+    const mergedCacheConfig = RedisCacheImpl.mergeCacheConfigWithDefault(cacheConfig)
 
-    // Unfortunately, the node-redis library provides no sugar for maintaining hash map TTLs so we can't use HSET with
-    // TTL.  To work around this, build the cache key with a region prefix to namespace cache entries :/
     const redisCacheKey = buildRegionPrefixedCacheKey(cacheRegion, cacheKey)
-
     try {
       // Try to get the value from Redis by key
       const cachedRes = await this._redisClient.get(redisCacheKey)
 
       // If a value is found, decode and return
-      if (cachedRes) {
-        return mergedCacheConfig.codec.decode(cachedRes)
+      const res = CacheCodec.decode<T>(cachedRes)
+      if (res) {
+        return res
       }
     } catch (e) {
-      this._log.error(`Error attempting to retrieve value for key ${cacheKey}: ${e.message}`, {
+      this._log.error(`Error attempting to retrieve value for key ${cacheKey}`, {
         fn: this.readThrough.name
       })
     }
 
-    let readResult: Optional<T>
     try {
       this._log.debug(`Cache miss for ${cacheKey}`)
-      readResult = await this.handleCacheMiss(redisCacheKey, mergedCacheConfig, fnInvocation)
+      return await this.handleCacheMiss(redisCacheKey, mergedCacheConfig, fnInvocation)
     } catch (e) {
-      this._log.error(`Error handling cache miss for key ${cacheKey}: ${e.message}`, { fn: this.readThrough.name })
+      throw new CacheError(`Error handling cache miss for key ${cacheKey}`, e)
     }
-
-    // Always return the result even on a cache put fail
-    return readResult
   }
 
   /**
@@ -97,33 +141,28 @@ export class RedisCacheImpl implements RedisCache {
     cacheKey: string,
     cacheConfig: CacheConfig,
     fnInvocation: AsyncFunctionInvocation<T>
-  ): Promise<Optional<T>> {
-    let readResult: Optional<T>
+  ): Promise<T> {
     try {
       if (cacheConfig.doubleCheckedPut) {
         // Build a Redis lock
         const redisLock = this._redisLockFactory.createLock(cacheKey, cacheConfig.doubleCheckLockTtlSeconds)
         // Execute a double checked read within a lock
         const wrappedCalcAndSetInCacheFn = withLock(redisLock, doubleCheckedCalcAndSetInCache)
-        readResult = (await wrappedCalcAndSetInCacheFn(
-          this._log,
-          this._redisClient,
-          cacheKey,
-          cacheConfig,
-          fnInvocation
-        )) as Optional<T>
+        return  (
+          await wrappedCalcAndSetInCacheFn(
+            this._log,
+            this._redisClient,
+            cacheKey,
+            cacheConfig,
+            fnInvocation
+          )) as T
       } else {
         // No double checked locking - just do the work and set in the cache
-        readResult = await calcAndSetInCache(this._log, this._redisClient, cacheKey, cacheConfig, fnInvocation)
+        return await readAndSetInCache(this._log, this._redisClient, cacheKey, cacheConfig, fnInvocation)
       }
     } catch (e) {
-      this._log.error(`Error attepmting to calculate value for cache key ${cacheKey}: ${e.message}`, {
-        fn: this.handleCacheMiss.name
-      })
+      throw new CacheError(`Error attempting to calculate value for cache key ${cacheKey}`, e)
     }
-
-    // Always return the result even on a cache put fail
-    return readResult
   }
 
   /**
@@ -137,7 +176,7 @@ export class RedisCacheImpl implements RedisCache {
       const uniqueRegions = new Set(keys.map(key => extractCacheRegionNameFromCacheKey(key)))
       return Array.from(uniqueRegions)
     } catch (e) {
-      this._log.error(`Error attempting to retrieve cache region names: ${e.message}`, {
+      this._log.error(`Error attempting to retrieve cache region names: ${toErrorStack(e)}`, {
         fn: this.getCacheRegionNames.name
       })
     }
@@ -164,7 +203,7 @@ export class RedisCacheImpl implements RedisCache {
       return res
     } catch (e) {
       this._log.error(
-        `Error attempting to retrieve cache key names or TTL values for region ${cacheRegionName}: ${e.message}`,
+        `Error attempting to retrieve cache key names or TTL values for region ${cacheRegionName}: ${toErrorStack(e)}`,
         { fn: this.getCacheKeys.name }
       )
     }
@@ -185,7 +224,7 @@ export class RedisCacheImpl implements RedisCache {
       }
       return true
     } catch (e) {
-      this._log.error(`Error attempting to invalidate cache region ${cacheRegionName}: ${e.message}`, {
+      this._log.error(`Error attempting to invalidate cache region ${cacheRegionName}: ${toErrorStack(e)}`, {
         fn: this.invalidateCacheRegion.name
       })
     }
@@ -205,7 +244,7 @@ export class RedisCacheImpl implements RedisCache {
       const res = await this._redisClient.del(key)
       return res === 1
     } catch (e) {
-      this._log.error(`Error attempting to invalidate cache key ${cacheRegionName}: ${e.message}`, {
+      this._log.error(`Error attempting to invalidate cache key ${cacheRegionName}: ${toErrorStack(e)}`, {
         fn: this.invalidateCacheRegion.name
       })
     }
@@ -216,32 +255,19 @@ export class RedisCacheImpl implements RedisCache {
 /**
  * Fetch an entry from the cache.
  *
- * @param log Logger to use
  * @param redisClient RedisClient to use
  * @param cacheKey The key to use
- * @param cacheConfig Cache configuration
  */
-const fetchFromCache = async <T>(
-  log: Logger,
-  redisClient: IHandyRedis,
-  cacheKey: string,
-  cacheConfig: CacheConfig
-): Promise<Optional<T>> => {
-  let cachedRes
+const fetchFromCache = async <T>(redisClient: IHandyRedis, cacheKey: string): Promise<T | undefined> => {
   try {
     // Try to get the value from Redis by key
-    cachedRes = await redisClient.get(cacheKey)
+    const cachedRes = await redisClient.get(cacheKey)
 
     // If a value is found, decode and return
-    if (cachedRes) {
-      return cacheConfig.codec.decode(cachedRes)
-    }
+    return CacheCodec.decode<T>(cachedRes)
   } catch (e) {
-    log.error(`Error attepmting to retrieve value from cache for ${cacheKey}: ${e.message}`, {
-      fn: fetchFromCache.name
-    })
+    throw new CacheError(`Error attempting to retrieve value from cache for ${cacheKey}`, e)
   }
-  return undefined
 }
 
 /**
@@ -261,24 +287,21 @@ const doubleCheckedCalcAndSetInCache = async <T>(
   cacheKey: string,
   cacheConfig: CacheConfig,
   fnInvocation: AsyncFunctionInvocation<T>
-): Promise<Optional<T>> => {
+): Promise<T> => {
   try {
-    const cachedValue: Optional<T> = await fetchFromCache(log, redisClient, cacheKey, cacheConfig)
+    const cachedValue: T | undefined = await fetchFromCache(redisClient, cacheKey)
     if (cachedValue) {
       log.debug(`Value for ${cacheKey} found in cache during double check - returning value`)
       return cachedValue
     }
-    return await calcAndSetInCache(log, redisClient, cacheKey, cacheConfig, fnInvocation)
+    return await readAndSetInCache(log, redisClient, cacheKey, cacheConfig, fnInvocation)
   } catch (e) {
-    throw new CacheError(
-      `Error attepmting to retrieve value from cache or calcAndSetInCache for ${cacheKey}: ${e.message}`,
-      e
-    )
+    throw new CacheError(`Error attempting to retrieve value from cache or calcAndSetInCache for ${cacheKey}`, e)
   }
 }
 
 /**
- * Calculate the value and set in the Redis cache region
+ * Read the value and set in the Redis cache region
  *
  * @param log Logger to use
  * @param redisClient RedisClient to use
@@ -286,40 +309,58 @@ const doubleCheckedCalcAndSetInCache = async <T>(
  * @param cacheConfig Cache configuration
  * @param fnInvocation The function invocation to use for calculating the new value
  */
-const calcAndSetInCache = async <T>(
+const readAndSetInCache = async <T>(
   log: Logger,
   redisClient: IHandyRedis,
   cacheKey: string,
   cacheConfig: CacheConfig,
   fnInvocation: AsyncFunctionInvocation<T>
-): Promise<Optional<T>> => {
+): Promise<T> => {
   let calculatedResult
   try {
     calculatedResult = await fnInvocation.readFn(...fnInvocation.args)
   } catch (e) {
     // If the read fails, don't poison the cache
-    throw new CacheError(`Error calculating result after cache miss for ${cacheKey}: ${e.message}`, e)
+    throw new CacheError(`Error calculating result after cache miss for ${cacheKey}`, e)
   }
 
   // Only cache if the result is defined or non-null
   if (calculatedResult) {
     try {
-      // Set in Redis with the specified TTL
-      await redisClient.set(cacheKey, cacheConfig.codec.encode(calculatedResult), [
-        EXPIRE_COMMAND,
-        cacheConfig.ttlSeconds
-      ])
-      log.debug(`Cached ${cacheKey} with ttl of ${cacheConfig.ttlSeconds}s`)
+      setInCache(log, redisClient, cacheKey, cacheConfig, calculatedResult)
     } catch (e) {
-      log.error(`Error setting fetched result in Redis after cache miss for ${cacheKey}: ${e.message}`, {
-        fn: calcAndSetInCache.name
+      log.error(`Error setting fetched result in Redis after cache miss for ${cacheKey}: ${toErrorStack(e)}`, {
+        fn: readAndSetInCache.name
       })
     }
   } else {
     log.debug(`Not caching read result in Redis  - value is undefined after read for key ${cacheKey}`, {
-      fn: calcAndSetInCache.name
+      fn: readAndSetInCache.name
     })
   }
 
   return calculatedResult
+}
+
+const setInCache = async <T>(
+  log: Logger,
+  redisClient: IHandyRedis,
+  cacheKey: string,
+  cacheConfig: CacheConfig,
+  value: any
+): Promise<void> => {
+  try {
+    // Set in Redis with the specified TTL
+    const codec = codecRegistry.getCodecInstance(cacheConfig.codecId)
+    const encodedObject = codec.encode<T>(value)
+    await redisClient.set(cacheKey, encodedObject, [
+      EXPIRE_COMMAND,
+      cacheConfig.ttlSeconds
+    ])
+    log.debug(`Cached ${cacheKey} with ttl of ${cacheConfig.ttlSeconds}s`)
+  } catch (e) {
+    log.error(`Error setting value in Redis for ${cacheKey}: ${toErrorStack(e)}`, {
+      fn: readAndSetInCache.name
+    })
+  }
 }

@@ -3,7 +3,7 @@ import { IHandyRedis } from 'handy-redis'
 import uuid from 'uuid'
 import { Logger } from 'winston'
 import { Lock, LockConfig } from '../lock'
-import { LockError } from '../errors'
+import { LockError, toErrorStack } from '../errors'
 import { sleep } from '../../util'
 
 export const REDIS_LOCK_PREFIX = 'LOCK_'
@@ -69,8 +69,8 @@ export class SimpleRedisLockImpl implements RedisLock {
       this.locked = res === SUCCESS_RES
       return this.locked
     } catch (e) {
-      const msg = `Error attempting tryLock for key ${this._lockKey}: ${e.message}`
-      this._log.error(msg, { fn: this.tryAcquire.name })
+      const msg = `Error attempting tryLock for key ${this._lockKey}`
+      this._log.error(`${msg}: ${toErrorStack(e)}`, { fn: this.tryAcquire.name })
       throw new LockError(msg, e)
     }
   }
@@ -103,8 +103,8 @@ export class SimpleRedisLockImpl implements RedisLock {
         }
       }
     } catch (e) {
-      const msg = `Error attempting lock for key ${this._lockKey}: ${e.message}`
-      this._log.error(msg, { fn: this.acquire.name })
+      const msg = `Error attempting lock for key ${this._lockKey}`
+      this._log.error(`${msg}: ${toErrorStack(e)}`, { fn: this.acquire.name })
       throw new LockError(msg, e)
     }
 
@@ -127,7 +127,7 @@ export class SimpleRedisLockImpl implements RedisLock {
 
         return res
       } catch (e) {
-        const msg = `Error attempting released for key ${this._lockKey}: ${e.message}`
+        const msg = `Error attempting released for key ${this._lockKey}: ${toErrorStack(e)}`
         this._log.error(msg, { fn: this.release.name }, { fn: this.release.name })
         return false
       }

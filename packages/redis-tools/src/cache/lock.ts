@@ -64,7 +64,7 @@ export const withLock = <FT extends (...args: any[]) => any>(
       }
     } catch (e) {
       // Something bad happened while we tried to acquire the lock - throw in the towel
-      throw new LockError(`Error acquiring lock for key ${lock.getLockKey()}: ${e.message}`, e)
+      throw new LockError(`Error acquiring lock for key ${lock.getLockKey()}`, e)
     } finally {
       // Release the lock
       lock.release()
