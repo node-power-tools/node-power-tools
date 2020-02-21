@@ -1,5 +1,7 @@
 import VError from 'verror'
 
+export const toErrorStack = (e: Error): string => `${e.message}\n${VError.fullStack(e)}`
+
 export abstract class NPTError extends VError {
   protected constructor(name: string, message: string, cause?: Error) {
     super(
@@ -14,7 +16,7 @@ export abstract class NPTError extends VError {
 }
 
 /**
- * Error throw if mutex operations fail
+ * Error thrown if mutex operations fail
  */
 export class LockError extends NPTError {
   constructor(message: string, cause?: Error) {
@@ -23,10 +25,19 @@ export class LockError extends NPTError {
 }
 
 /**
- * Error throw if cache operations fail
+ * Error thrown if cache operations fail
  */
 export class CacheError extends NPTError {
   constructor(message: string, cause?: Error) {
     super(CacheError.name, message, cause)
+  }
+}
+
+/**
+ * Error thrown on cache codec registry errors
+ */
+export class CodecRegistryError extends NPTError{
+  constructor(message: string, cause?: Error) {
+    super(CodecRegistryError.name, message, cause)
   }
 }

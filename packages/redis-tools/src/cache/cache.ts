@@ -4,14 +4,6 @@ import { CacheError } from './errors'
 import { SimpleJsonCodec } from './cache-codec'
 
 /**
- * Cache serialization codec.
- */
-export interface CacheCodec {
-  encode: <T>(rawObject: T) => string;
-  decode: <T>(encodedObject: string) => T;
-}
-
-/**
  * Cache configuration for a cache request.
  */
 export interface CacheConfig {
@@ -29,9 +21,9 @@ export interface CacheConfig {
    */
   doubleCheckLockTtlSeconds: number;
   /**
-   * Codec for serialization/deserialization of cached values in the underlying cache
+   * Codec id for serialization/deserialization of cached values in the underlying cache
    */
-  codec: CacheCodec;
+  codecId: string;
 }
 
 /**
@@ -39,7 +31,7 @@ export interface CacheConfig {
  */
 export type PartialCacheConfig =
   | NonNullable<Pick<CacheConfig, 'ttlSeconds' | 'doubleCheckedPut'>>
-  | Pick<CacheConfig, 'doubleCheckLockTtlSeconds' | 'codec'>
+  | Pick<CacheConfig, 'doubleCheckLockTtlSeconds' | 'codecId'>
 
 /**
  * A default cache configuration
@@ -48,7 +40,7 @@ export const DEFAULT_CACHE_CONFIGURATION: CacheConfig = {
   ttlSeconds: 60,
   doubleCheckedPut: false,
   doubleCheckLockTtlSeconds: 30,
-  codec: SimpleJsonCodec
+  codecId: SimpleJsonCodec.ID
 }
 
 /**
@@ -62,8 +54,17 @@ export type CacheConfigurations = {
  * A caching request
  */
 export interface CacheRequest {
+  /**
+   *  Optional cache region name - will be defaulted if not included
+   */
   cacheRegion?: string;
+  /**
+   * The cache key to use
+   */
   cacheKey: string;
+  /**
+   * Cache configuration to use for the request
+   */
   cacheConfig?: Partial<CacheConfig>;
 }
 
@@ -83,16 +84,40 @@ export interface ReadThroughRequest<T> extends CacheRequest {
 }
 
 /**
+ * A put request
+ */
+export interface PutRequest<T> extends CacheRequest {
+  value: T;
+}
+
+/**
  * Caching interface
  */
 export interface Cache {
+  /**
+   * Get from the cache
+   *
+   * @param cacheKey The cache
+   * @param cacheRegion The optional cache region name - will be defaulted
+   *        if not provided
+   * @return The cached value
+   */
+  get<T>(cacheKey: string, cacheRegion?: string): Promise<Optional<T>>;
+
+  /**
+   * Put a value into the cache
+   *
+   * @param putRequest The put request
+   */
+  put<T>(putRequest: PutRequest<T>): Promise<void>;
+
   /**
    * Read through a cache
    *
    * @param readThroughRequest A read through request
    * @return The value returned from the cache or calculated via {@link ReadThroughRequest#readFn}
    */
-  readThrough<T>(readThroughRequest: ReadThroughRequest<T>): Promise<Optional<T>>;
+  readThrough<T>(readThroughRequest: ReadThroughRequest<T>): Promise<T>;
 
   /**
    * Invalidate a cache region.
@@ -160,13 +185,13 @@ export const CacheKeyGenFunctions = {
 export function withReadThroughCache<FT extends(...args: any[]) => any>(
   cache: Cache,
   cacheRequest: ReadThroughRequest<ReturnType<FT>>
-): (...funcArgs: Parameters<FT>) => Promise<Optional<ReturnType<FT>>> {
-  return async (): Promise<Optional<ReturnType<FT>>> => {
+): (...funcArgs: Parameters<FT>) => Promise<ReturnType<FT>> {
+  return async (): Promise<ReturnType<FT>> => {
     try {
       return await cache.readThrough(cacheRequest)
     } catch (e) {
       throw new CacheError(
-        `Error during read through attempt for read through request for key ${cacheRequest.cacheKey}: ${e.message}`,
+        `Error during read through attempt for read through request for key ${cacheRequest.cacheKey}`,
         e
       )
     }

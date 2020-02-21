@@ -66,10 +66,7 @@ export function buildCacheDecorator(
             cacheConfig: mergedCacheConfig
           })(...args)
         } catch (e) {
-          throw new CacheError(
-            `Error attempting to read through cache in decorator for key ${args[1]}: ${e.message}`,
-            e
-          )
+          throw new CacheError(`Error attempting to read through cache in decorator for key ${cacheKey}`, e)
         }
       }
 
