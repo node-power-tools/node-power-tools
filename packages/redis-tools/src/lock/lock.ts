@@ -30,6 +30,18 @@ export interface Lock {
   release(): Promise<boolean>;
 
   /**
+   * Release a lock - this will release the lock held by the underlying implementation before the TTL
+   * expires if still locked.
+   *
+   * @param quiet false if this operation should throw an error if the lock was not released
+   * successfully
+   *
+   * @return true if the lock was released successfully, false if unknown as to whether the lock was
+   * released successfully
+   */
+  release(quiet: boolean): Promise<boolean>;
+
+  /**
    * Get the underlying lock implementation's key
    */
   getLockKey(): string;

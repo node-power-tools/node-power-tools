@@ -1,3 +1,4 @@
 export * from './cache'
-export * from './cache/redis'
+export * from './lock'
 export * from './util'
+export * from './logger'

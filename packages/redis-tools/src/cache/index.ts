@@ -3,6 +3,5 @@ export * from './cache-codec'
 export * from './cache-decorator'
 export * from './cache-manager'
 export * from './errors'
-export * from './lock'
-export * from './lock-decorator'
-export * from './lock-factory'
+export * from './redis'
+

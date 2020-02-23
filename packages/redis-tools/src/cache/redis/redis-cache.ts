@@ -1,6 +1,6 @@
 import { IHandyRedis } from 'handy-redis'
-import { Logger } from 'winston'
-import { Optional } from '../../util'
+import { NptLogger } from '../../logger'
+import { Optional, toErrorStack } from '../../util'
 import {
   AsyncFunctionInvocation,
   Cache,
@@ -10,7 +10,7 @@ import {
   ReadThroughRequest
 } from '../cache'
 import { CacheKeyEntry, CacheManager } from '../cache-manager'
-import { RedisLockFactory } from './redis-lock-factory'
+import { RedisLockFactory } from '../../lock'
 import {
   buildCacheKeyRegionPrefix,
   buildRegionPrefixedCacheKey,
@@ -19,8 +19,8 @@ import {
   extractCacheRegionNameFromCacheKey,
   extractKeyFromRegionPrefixedCacheKey
 } from '../cache-codec'
-import { withLock } from '../lock'
-import { CacheError, toErrorStack } from '../errors'
+import { withLock } from '../../lock'
+import { CacheError } from '../errors'
 
 const CACHE_REGION_PREFIX = 'CACHE_'
 const DEFAULT_CACHE_REGION_NAME = `${CACHE_REGION_PREFIX}DEFAULT`
@@ -40,9 +40,9 @@ export interface RedisCache extends Cache, CacheManager {}
 export class RedisCacheImpl implements RedisCache {
   private readonly _redisClient: IHandyRedis
   private readonly _redisLockFactory: RedisLockFactory
-  private readonly _log: Logger
+  private readonly _log: NptLogger
 
-  constructor(redisClient: IHandyRedis, redisLockFactory: RedisLockFactory, logger: Logger) {
+  constructor(redisClient: IHandyRedis, redisLockFactory: RedisLockFactory, logger: NptLogger) {
     this._redisClient = redisClient
     this._redisLockFactory = redisLockFactory
     this._log = logger
@@ -282,7 +282,7 @@ const fetchFromCache = async <T>(redisClient: IHandyRedis, cacheKey: string): Pr
  * @param fnInvocation The function invocation to use for calculating the new value
  */
 const doubleCheckedCalcAndSetInCache = async <T>(
-  log: Logger,
+  log: NptLogger,
   redisClient: IHandyRedis,
   cacheKey: string,
   cacheConfig: CacheConfig,
@@ -310,7 +310,7 @@ const doubleCheckedCalcAndSetInCache = async <T>(
  * @param fnInvocation The function invocation to use for calculating the new value
  */
 const readAndSetInCache = async <T>(
-  log: Logger,
+  log: NptLogger,
   redisClient: IHandyRedis,
   cacheKey: string,
   cacheConfig: CacheConfig,
@@ -343,7 +343,7 @@ const readAndSetInCache = async <T>(
 }
 
 const setInCache = async <T>(
-  log: Logger,
+  log: NptLogger,
   redisClient: IHandyRedis,
   cacheKey: string,
   cacheConfig: CacheConfig,

@@ -1,10 +1,10 @@
 import { ChronoUnit, Instant } from '@js-joda/core'
 import { IHandyRedis } from 'handy-redis'
 import uuid from 'uuid'
-import { Logger } from 'winston'
+import { NptLogger } from '../../logger'
+import { toErrorStack, sleep } from '../../util'
 import { Lock, LockConfig } from '../lock'
-import { LockError, toErrorStack } from '../errors'
-import { sleep } from '../../util'
+import { LockError } from '../errors'
 
 export const REDIS_LOCK_PREFIX = 'LOCK_'
 export const SUCCESS_RES = 'OK'
@@ -33,7 +33,7 @@ export interface RedisLock extends Lock {}
  * held by another client.
  */
 export class SimpleRedisLockImpl implements RedisLock {
-  private readonly _log: Logger
+  private readonly _log: NptLogger
   private readonly _redisClient: IHandyRedis
   private readonly _lockConfig: LockConfig
   private readonly _lockKey: string
@@ -41,7 +41,7 @@ export class SimpleRedisLockImpl implements RedisLock {
   private readonly lockUuid = uuid.v4()
   private locked = false
 
-  constructor(log: Logger, redisClient: IHandyRedis, lockConfig: LockConfig, lockKey: string, lockTtlSeconds: number) {
+  constructor(log: NptLogger, redisClient: IHandyRedis, lockConfig: LockConfig, lockKey: string, lockTtlSeconds: number) {
     this._log = log
     this._redisClient = redisClient
     this._lockConfig = lockConfig
@@ -112,26 +112,29 @@ export class SimpleRedisLockImpl implements RedisLock {
     return this.locked
   }
 
-  public async release(): Promise<boolean> {
+  public async release(quiet = true): Promise<boolean> {
     // Only do the work if locked
     if (this.locked) {
+      let success = false
       try {
         // Execute the Lua script to unlock if this lock owns the lock key
         const res = await this._redisClient.eval(DELETE_KEY_IF_VALUE_MATCH_CMD, 1, [this._lockKey], [this.lockUuid])
-        const success = res === SUCCESS_RES
-
+        success = res === SUCCESS_RES
         if (success) {
           this.locked = false
           this._log.debug(`Lock released for key ${this._lockKey}`, { fn: this.release.name })
         }
-
-        return res
       } catch (e) {
-        const msg = `Error attempting released for key ${this._lockKey}: ${toErrorStack(e)}`
-        this._log.error(msg, { fn: this.release.name }, { fn: this.release.name })
-        return false
+        this._log.error(`Error attempting to release lock for key ${this._lockKey}: ${toErrorStack(e)}`, { fn: this.release.name })
       }
+
+      if (!quiet && !success) {
+        throw new LockError(`Lock was not released successfully for key ${this._lockKey}`)
+      }
+
+      return success
     } else {
+      this._log.warn(`Attempted to release lock that was not locked for key ${this._lockKey}`, { fn: this.release.name })
       return true
     }
   }
