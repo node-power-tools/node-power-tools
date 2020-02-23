@@ -1,0 +1,47 @@
+{
+  "name": "@node-power-tools/cache-tools",
+  "version": "0.0.1",
+  "description": "Caching tools for NodeJS",
+  "keywords": [
+    "redis",
+    "caching",
+    "mutex",
+    "lock",
+    "read through"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bsantare/node-power-tools.git"
+  },
+  "author": "James Dunnam <7660553+jimador@users.noreply.github.com>",
+  "homepage": "https://github.com/bsantare/node-power-tools",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "/dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc",
+    "build:check": "tsc --noEmit",
+    "clean": "rimraf dist/*",
+    "fix:eslint": "eslint --fix \"src/**/*.{ts,js}\"",
+    "publish": "yarn publish",
+    "sort:packages": "npx sort-package-json",
+    "test": "yarn test:unit",
+    "test:unit": "jest"
+  },
+  "prettier": {
+    "singleQuote": true
+  },
+  "dependencies": {
+  },
+  "optionalDependencies": {
+  },
+  "bugs": {
+    "url": "https://github.com/bsantare/node-power-tools/issues"
+  }
+}
