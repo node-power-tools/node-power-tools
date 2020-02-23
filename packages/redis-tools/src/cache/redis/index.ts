@@ -1,3 +1,3 @@
 export * from './redis-cache'
-export * from './redis-lock-factory'
-export * from './redis-lock'
+export * from '../../lock/redis/redis-lock-factory'
+export * from '../../lock/redis/redis-lock'

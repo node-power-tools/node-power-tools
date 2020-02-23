@@ -1,4 +1,4 @@
-import * as crypto from 'crypto'
+import { NptLogger } from '../logger'
 import { AsyncFunction, Optional } from '../util'
 import { CacheError } from './errors'
 import { SimpleJsonCodec } from './cache-codec'
@@ -49,6 +49,24 @@ export const DEFAULT_CACHE_CONFIGURATION: CacheConfig = {
 export type CacheConfigurations = {
   [key: string]: PartialCacheConfig;
 }
+
+/**
+ * Factory to build a {@link CacheConfigurations} object
+ */
+export const buildCacheConfigurations = (cacheConfigurations: CacheConfigurations, defaultConfig: CacheConfig, logger: NptLogger) =>
+  (cacheName: string): CacheConfig => {
+    const config = cacheConfigurations[cacheName] || {}
+
+    if (!config) {
+      logger.warn(`No cache configuration found for cache name ${cacheName} - defaulting configuration`)
+    }
+
+    // Provide a default configuration for non-configured caches
+    return {
+      ...defaultConfig,
+      ...config
+    }
+  }
 
 /**
  * A caching request
@@ -135,45 +153,6 @@ export interface Cache {
    * @return true if invalidated, false otherwise
    */
   invalidateCacheKey(cacheRegionName: string, cacheKey: string): Promise<boolean>;
-}
-
-export enum CacheKeyGenStrategy {
-  /**
-   * Generate an md5 hash from all argument values.
-   */
-  HASH,
-  /**
-   * Specify which argument indexes to pick and then join the values with '_'.
-   */
-  PICK
-}
-
-const SCALAR_KEY = 'SCALAR_VALUE'
-
-/**
- * Cache key generation functions specified by {@link CacheKeyGenStrategy}
- */
-export const CacheKeyGenFunctions = {
-  /**
-   * Generate an md5 hash from all argument values.
-   */
-  [CacheKeyGenStrategy.HASH]: (_keyGenArgs: any[], args: any[]): string => {
-    if (args.length == 0) {
-      return SCALAR_KEY
-    }
-    const hash = crypto.createHash('md5')
-    args.forEach(curArg => hash.update(curArg))
-    return hash.digest('base64')
-  },
-  /**
-   * Specify which argument indexes to pick and then join the values with '_'.
-   */
-  [CacheKeyGenStrategy.PICK]: (keyGenArgs: any[], args: any[]): string => {
-    if (keyGenArgs.length == 0) {
-      throw new CacheError('keyGenArgs must contain at least one argument index for strategy PICK')
-    }
-    return args.filter((_val, index) => keyGenArgs.indexOf(index) >= 0).join('_')
-  }
 }
 
 /**

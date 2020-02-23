@@ -1,9 +1,10 @@
+import { NptLogger } from '../logger'
+import { KeyGenFunctions, KeyGenStrategy } from '../util'
+import { LockError } from './errors'
 import { LockFactory } from './lock-factory'
 import { withLock } from './lock'
-import { LockError } from './errors'
-import { Logger } from 'winston'
 
-type LockDecoratorFunction = (lockKey: string, lockTtlSeconds: number) => Function
+type LockDecoratorFunction = (cacheKeyGenStrategy: KeyGenStrategy, keyGenArgs: any[], lockTtlSeconds: number) => Function
 
 /**
  * Build a lock decorator function
@@ -11,14 +12,14 @@ type LockDecoratorFunction = (lockKey: string, lockTtlSeconds: number) => Functi
  * @param lockFactory The lock factory to use for the generated decorator
  * @param logger Log object to use
  */
-export function buildLockDecorator(lockFactory: LockFactory, logger: Logger): LockDecoratorFunction {
+export function buildLockDecorator(lockFactory: LockFactory, logger: NptLogger): LockDecoratorFunction {
   /**
    * A decorator factory for decorators that wrap a methods with a lock
    *
    * @param lockKey The key to use when creating the lock
    * @param lockTtlSeconds The lock TTL
    */
-  return function(lockKey: string, lockTtlSeconds: number) {
+  return function(cacheKeyGenStrategy: KeyGenStrategy, keyGenArgs: any[], lockTtlSeconds: number) {
     return function(
       _target: Record<string, any>,
       methodName: string,
@@ -27,10 +28,13 @@ export function buildLockDecorator(lockFactory: LockFactory, logger: Logger): Lo
       const originalFunction = propertyDesciptor.value
 
       propertyDesciptor.value = async function(this: any, ...args: any[]) {
+        // Generate the key
+        const lockKey = KeyGenFunctions[cacheKeyGenStrategy || KeyGenStrategy.HASH](keyGenArgs || [], args)
         // Create the lock
         const lock = lockFactory.createLock(lockKey, lockTtlSeconds)
         // Bind "this" to the callback
         const boundOriginalFunction = originalFunction.bind(this)
+
         try {
           logger.debug(`Attempting to acquire lock in decorator for key ${lock.getLockKey()}`, { methodName })
           return await withLock(lock, boundOriginalFunction)(...args)
