@@ -1904,6 +1904,9 @@ cache-base@^1.0.1:
     union-value "^1.0.0"
     unset-value "^1.0.0"
 
+"cache-tools@file:packages/cache-tools":
+  version "0.0.1"
+
 call-me-maybe@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/call-me-maybe/-/call-me-maybe-1.0.1.tgz#26d208ea89e37b5cbde60250a15f031c16a4d66b"
@@ -2208,6 +2211,9 @@ concat-stream@^2.0.0:
     inherits "^2.0.3"
     readable-stream "^3.0.2"
     typedarray "^0.0.6"
+
+"concurrent-tools@file:packages/concurrent-tools":
+  version "0.0.1"
 
 config-chain@^1.1.11:
   version "1.1.12"
@@ -6104,7 +6110,7 @@ redis-parser@^3.0.0:
     redis-errors "^1.0.0"
 
 "redis-tools@file:packages/redis-tools":
-  version "0.0.1-alpha.8"
+  version "0.0.1-alpha.14"
   dependencies:
     "@js-joda/core" "^2.0.0"
     "@types/uuid" "^3.4.7"
@@ -6112,9 +6118,9 @@ redis-parser@^3.0.0:
     reflect-metadata "^0.1.13"
     uuid "^3.4.0"
     verror "^1.10.0"
-    winston "^3.2.1"
   optionalDependencies:
     handy-redis "^1.8.0"
+    winston "^3.2.1"
 
 redis@^3.0.2:
   version "3.0.2"
