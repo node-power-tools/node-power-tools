@@ -1,6 +1,6 @@
 {
   "name": "@node-power-tools/redis-tools",
-  "version": "0.0.1-alpha.15",
+  "version": "0.1.1-alpha.1",
   "description": "Redis tools for use with NodeJS",
   "keywords": [
     "redis",
@@ -44,5 +44,5 @@
     "handy-redis": "^1.8.0",
     "winston": "^3.2.1"
   },
-  "gitHead": "7b6953d41e0c4818c725576e49bc833c42e4090b"
+  "gitHead": "88b7447d77075b5c3560f7bba931b36f0bf6a8f7"
 }
