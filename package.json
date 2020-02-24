@@ -41,7 +41,9 @@
     "yarn": "^1.22.0"
   },
   "dependencies": {
-    "redis-tools": "file:packages/redis-tools"
+    "redis-tools": "file:packages/redis-tools",
+    "concurrent-tools": "file:packages/concurrent-tools",
+    "cache-tools": "file:packages/cache-tools"
   },
   "version": "0.0.1-alpha.14"
 }

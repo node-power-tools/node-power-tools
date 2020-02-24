@@ -1,11 +1,10 @@
 {
-  "name": "@node-power-tools/cache-tools",
+  "name": "@node-power-tools/concurrent-tools",
   "version": "0.0.1",
-  "description": "Caching tools for NodeJS",
+  "description": "Concurrency tools for NodeJS",
   "keywords": [
-    "redis",
-    "caching",
-    "read through"
+    "mutex",
+    "lock"
   ],
   "repository": {
     "type": "git",
