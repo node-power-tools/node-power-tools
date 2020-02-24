@@ -54,7 +54,7 @@
     }
   },
   "lint-staged": {
-    "*.{js,md,css,html}": [
+    "*.{js,md,css,html,ts,tsx}": [
       "prettier --trailing-comma es5 --single-quote --write",
       "git add"
     ]
