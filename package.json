@@ -14,7 +14,8 @@
     "publish:lerna": "lerna publish -y --canary --preid alpha --dist-tag=alpha",
     "update-version": "lerna publish --skip-git --skip-npm --force-publish '*'",
     "check-packages": "yarn clean && yarn compile && yarn test && yarn lint",
-    "publish:alpha": "lerna publish -y --canary --preid alpha --npm-tag=alpha --force-publish=*"
+    "publish:alpha": "lerna publish -y --canary --preid alpha --npm-tag=alpha --force-publish=*",
+    "publish:minor": "lerna publish -y --canary minor --preid alpha --npm-tag=alpha --force-publish=*"
   },
   "devDependencies": {
     "@lerna/bootstrap": "^3.20.0",
