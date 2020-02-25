@@ -21,7 +21,7 @@
     "build": "tsc",
     "build:check": "tsc --noEmit",
     "clean": "rimraf dist/*",
-    "fix:eslint": "eslint --fix \"src/**/*.{ts,js}\"",
+    "fix:eslint": "eslint --fix src/**/*.{ts,js}",
     "publish": "yarn publish",
     "sort:packages": "npx sort-package-json",
     "test": "yarn test:unit",
