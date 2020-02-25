@@ -1,4 +1,3 @@
-import { NptLogger } from '../logger';
 import { KeyGenFunctions, KeyGenStrategy } from '../util';
 import { CacheError } from './errors';
 import {
@@ -7,6 +6,7 @@ import {
   PartialCacheConfig,
   withReadThroughCache,
 } from './cache';
+import { NptLogger } from '@node-power-tools/logging-tools';
 
 export type KeyGeneratorFunction = (
   keyGenStrategy?: KeyGenStrategy,

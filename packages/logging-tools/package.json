@@ -1,5 +1,5 @@
 {
-  "name": "logging-tools",
+  "name": "@node-power-tools/logging-tools",
   "version": "0.0.1",
   "description": "Logging tools for NodeJS",
   "repository": {

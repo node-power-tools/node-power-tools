@@ -1,5 +1,4 @@
 import { IHandyRedis } from 'handy-redis';
-import { NptLogger } from '../../logger';
 import { Optional, toErrorStack } from '../../util';
 import {
   AsyncFunctionInvocation,
@@ -10,7 +9,6 @@ import {
   ReadThroughRequest,
 } from '../cache';
 import { CacheKeyEntry, CacheManager } from '../cache-manager';
-import { RedisLockFactory } from '../../lock';
 import {
   buildCacheKeyRegionPrefix,
   buildRegionPrefixedCacheKey,
@@ -19,8 +17,12 @@ import {
   extractCacheRegionNameFromCacheKey,
   extractKeyFromRegionPrefixedCacheKey,
 } from '../cache-codec';
-import { withLock } from '../../lock';
 import { CacheError } from '../errors';
+import {
+  RedisLockFactory,
+  withLock,
+} from '@node-power-tools/concurrent-tools/dist';
+import { NptLogger } from '@node-power-tools/logging-tools/src';
 
 const CACHE_REGION_PREFIX = 'CACHE_';
 const DEFAULT_CACHE_REGION_NAME = `${CACHE_REGION_PREFIX}DEFAULT`;

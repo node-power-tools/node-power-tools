@@ -36,6 +36,7 @@
   },
   "dependencies": {
     "@js-joda/core": "^2.0.0",
+    "@node-power-tools/logging-tools": "^0.0.1",
     "@types/uuid": "^3.4.7",
     "@types/verror": "^1.10.3",
     "reflect-metadata": "^0.1.13",
