@@ -1,7 +1,7 @@
-import { AsyncFunction, Optional } from '../util';
-import { CacheError } from './errors';
-import { SimpleJsonCodec } from './cache-codec';
-import { NptLogger } from '@node-power-tools/logging-tools';
+import { AsyncFunction, Optional } from '../util'
+import { CacheError } from './errors'
+import { SimpleJsonCodec } from './cache-codec'
+import { NptLogger } from '@node-power-tools/logging-tools'
 
 /**
  * Cache configuration for a cache request.
@@ -41,7 +41,7 @@ export const DEFAULT_CACHE_CONFIGURATION: CacheConfig = {
   doubleCheckedPut: false,
   doubleCheckLockTtlSeconds: 30,
   codecId: SimpleJsonCodec.ID,
-};
+}
 
 /**
  * A cache configurations collection indexed by cache region name
@@ -58,20 +58,20 @@ export const buildCacheConfigurations = (
   defaultConfig: CacheConfig,
   logger: NptLogger
 ) => (cacheName: string): CacheConfig => {
-  const config = cacheConfigurations[cacheName] || {};
+  const config = cacheConfigurations[cacheName] || {}
 
   if (!config) {
     logger.warn(
       `No cache configuration found for cache name ${cacheName} - defaulting configuration`
-    );
+    )
   }
 
   // Provide a default configuration for non-configured caches
   return {
     ...defaultConfig,
     ...config,
-  };
-};
+  }
+}
 
 /**
  * A caching request
@@ -169,18 +169,18 @@ export interface Cache {
  * @param cache The cache object to use
  * @param cacheRequest The cache request
  */
-export function withReadThroughCache<FT extends (...args: any[]) => any>(
+export function withReadThroughCache<FT extends(...args: any[]) => any>(
   cache: Cache,
   cacheRequest: ReadThroughRequest<ReturnType<FT>>
 ): (...funcArgs: Parameters<FT>) => Promise<ReturnType<FT>> {
   return async (): Promise<ReturnType<FT>> => {
     try {
-      return await cache.readThrough(cacheRequest);
+      return await cache.readThrough(cacheRequest)
     } catch (e) {
       throw new CacheError(
         `Error during read through attempt for read through request for key ${cacheRequest.cacheKey}`,
         e
-      );
+      )
     }
-  };
+  }
 }

@@ -1,5 +1,5 @@
-import { createHash } from 'crypto';
-import { CacheError } from '../cache';
+import { createHash } from 'crypto'
+import { CacheError } from '../cache'
 
 export enum KeyGenStrategy {
   /**
@@ -16,7 +16,7 @@ export enum KeyGenStrategy {
   PICK,
 }
 
-const SCALAR_KEY = 'SCALAR_VALUE';
+const SCALAR_KEY = 'SCALAR_VALUE'
 
 /**
  * Key generation functions specified by {@link KeyGenStrategy}
@@ -29,9 +29,9 @@ export const KeyGenFunctions = {
     if (keyGenArgs.length != 1) {
       throw new CacheError(
         'keyGenArgs must contain at least one argument index for strategy IDENTITY'
-      );
+      )
     }
-    return args[0];
+    return args[0]
   },
 
   /**
@@ -39,11 +39,11 @@ export const KeyGenFunctions = {
    */
   [KeyGenStrategy.HASH]: (_keyGenArgs: any[], args: any[]): string => {
     if (args.length == 0) {
-      return SCALAR_KEY;
+      return SCALAR_KEY
     }
-    const hash = createHash('md5');
-    args.forEach(curArg => hash.update(curArg));
-    return hash.digest('base64');
+    const hash = createHash('md5')
+    args.forEach(curArg => hash.update(curArg))
+    return hash.digest('base64')
   },
 
   /**
@@ -53,10 +53,10 @@ export const KeyGenFunctions = {
     if (keyGenArgs.length == 0) {
       throw new CacheError(
         'keyGenArgs must contain at least one argument index for strategy PICK'
-      );
+      )
     }
     return args
       .filter((_val, index) => keyGenArgs.indexOf(index) >= 0)
-      .join('_');
+      .join('_')
   },
-};
+}

@@ -1,5 +1,5 @@
-import { IHandyRedis } from 'handy-redis';
-import { Optional, toErrorStack } from '../../util';
+import { IHandyRedis } from 'handy-redis'
+import { Optional, toErrorStack } from '../../util'
 import {
   AsyncFunctionInvocation,
   Cache,
@@ -7,8 +7,8 @@ import {
   DEFAULT_CACHE_CONFIGURATION,
   PutRequest,
   ReadThroughRequest,
-} from '../cache';
-import { CacheKeyEntry, CacheManager } from '../cache-manager';
+} from '../cache'
+import { CacheKeyEntry, CacheManager } from '../cache-manager'
 import {
   buildCacheKeyRegionPrefix,
   buildRegionPrefixedCacheKey,
@@ -16,17 +16,17 @@ import {
   codecRegistry,
   extractCacheRegionNameFromCacheKey,
   extractKeyFromRegionPrefixedCacheKey,
-} from '../cache-codec';
-import { CacheError } from '../errors';
+} from '../cache-codec'
+import { CacheError } from '../errors'
 import {
   RedisLockFactory,
   withLock,
-} from '@node-power-tools/concurrent-tools/dist';
-import { NptLogger } from '@node-power-tools/logging-tools/src';
+} from '@node-power-tools/concurrent-tools/dist'
+import { NptLogger } from '@node-power-tools/logging-tools/src'
 
-const CACHE_REGION_PREFIX = 'CACHE_';
-const DEFAULT_CACHE_REGION_NAME = `${CACHE_REGION_PREFIX}DEFAULT`;
-const EXPIRE_COMMAND = 'EX';
+const CACHE_REGION_PREFIX = 'CACHE_'
+const DEFAULT_CACHE_REGION_NAME = `${CACHE_REGION_PREFIX}DEFAULT`
+const EXPIRE_COMMAND = 'EX'
 
 /**
  * Marker interface for Redis caches
@@ -49,9 +49,9 @@ export class RedisCacheImpl implements RedisCache {
     redisLockFactory: RedisLockFactory,
     logger: NptLogger
   ) {
-    this._redisClient = redisClient;
-    this._redisLockFactory = redisLockFactory;
-    this._log = logger;
+    this._redisClient = redisClient
+    this._redisLockFactory = redisLockFactory
+    this._log = logger
   }
 
   /**
@@ -65,7 +65,7 @@ export class RedisCacheImpl implements RedisCache {
     return {
       ...DEFAULT_CACHE_CONFIGURATION,
       ...(cacheConfig || {}),
-    };
+    }
   }
 
   /**
@@ -79,14 +79,14 @@ export class RedisCacheImpl implements RedisCache {
     cacheKey: string,
     cacheRegion: string = DEFAULT_CACHE_REGION_NAME
   ): Promise<Optional<T>> {
-    const redisCacheKey = buildRegionPrefixedCacheKey(cacheRegion, cacheKey);
+    const redisCacheKey = buildRegionPrefixedCacheKey(cacheRegion, cacheKey)
     try {
-      return await fetchFromCache(this._redisClient, redisCacheKey);
+      return await fetchFromCache(this._redisClient, redisCacheKey)
     } catch (e) {
       throw new CacheError(
         `Error attempting to get value from cache for region ${cacheRegion} and key ${cacheKey}`,
         e
-      );
+      )
     }
   }
 
@@ -99,10 +99,10 @@ export class RedisCacheImpl implements RedisCache {
     const redisCacheKey = buildRegionPrefixedCacheKey(
       putRequest.cacheRegion || DEFAULT_CACHE_REGION_NAME,
       putRequest.cacheKey
-    );
+    )
     const mergedCacheConfig = RedisCacheImpl.mergeCacheConfigWithDefault(
       putRequest.cacheConfig
-    );
+    )
     try {
       return await setInCache(
         this._log,
@@ -110,12 +110,12 @@ export class RedisCacheImpl implements RedisCache {
         redisCacheKey,
         mergedCacheConfig,
         putRequest.value
-      );
+      )
     } catch (e) {
       throw new CacheError(
         `Error attempting to set value in Redis for region ${putRequest.cacheRegion} and key ${putRequest.cacheKey}`,
         e
-      );
+      )
     }
   }
 
@@ -134,17 +134,17 @@ export class RedisCacheImpl implements RedisCache {
     // Spread the default cache options to support sparsely populated cache options
     const mergedCacheConfig = RedisCacheImpl.mergeCacheConfigWithDefault(
       cacheConfig
-    );
+    )
 
-    const redisCacheKey = buildRegionPrefixedCacheKey(cacheRegion, cacheKey);
+    const redisCacheKey = buildRegionPrefixedCacheKey(cacheRegion, cacheKey)
     try {
       // Try to get the value from Redis by key
-      const cachedRes = await this._redisClient.get(redisCacheKey);
+      const cachedRes = await this._redisClient.get(redisCacheKey)
 
       // If a value is found, decode and return
-      const res = CacheCodec.decode<T>(cachedRes);
+      const res = CacheCodec.decode<T>(cachedRes)
       if (res) {
-        return res;
+        return res
       }
     } catch (e) {
       this._log.error(
@@ -152,18 +152,18 @@ export class RedisCacheImpl implements RedisCache {
         {
           fn: this.readThrough.name,
         }
-      );
+      )
     }
 
     try {
-      this._log.debug(`Cache miss for ${cacheKey}`);
+      this._log.debug(`Cache miss for ${cacheKey}`)
       return await this.handleCacheMiss(
         redisCacheKey,
         mergedCacheConfig,
         fnInvocation
-      );
+      )
     } catch (e) {
-      throw new CacheError(`Error handling cache miss for key ${cacheKey}`, e);
+      throw new CacheError(`Error handling cache miss for key ${cacheKey}`, e)
     }
   }
 
@@ -185,19 +185,19 @@ export class RedisCacheImpl implements RedisCache {
         const redisLock = this._redisLockFactory.createLock(
           cacheKey,
           cacheConfig.doubleCheckLockTtlSeconds
-        );
+        )
         // Execute a double checked read within a lock
         const wrappedCalcAndSetInCacheFn = withLock(
           redisLock,
           doubleCheckedCalcAndSetInCache
-        );
+        )
         return (await wrappedCalcAndSetInCacheFn(
           this._log,
           this._redisClient,
           cacheKey,
           cacheConfig,
           fnInvocation
-        )) as T;
+        )) as T
       } else {
         // No double checked locking - just do the work and set in the cache
         return await readAndSetInCache(
@@ -206,13 +206,13 @@ export class RedisCacheImpl implements RedisCache {
           cacheKey,
           cacheConfig,
           fnInvocation
-        );
+        )
       }
     } catch (e) {
       throw new CacheError(
         `Error attempting to calculate value for cache key ${cacheKey}`,
         e
-      );
+      )
     }
   }
 
@@ -223,20 +223,20 @@ export class RedisCacheImpl implements RedisCache {
    */
   async getCacheRegionNames(): Promise<string[]> {
     try {
-      const keys = await this._redisClient.keys(`${CACHE_REGION_PREFIX}*`);
+      const keys = await this._redisClient.keys(`${CACHE_REGION_PREFIX}*`)
       const uniqueRegions = new Set(
         keys.map(key => extractCacheRegionNameFromCacheKey(key))
-      );
-      return Array.from(uniqueRegions);
+      )
+      return Array.from(uniqueRegions)
     } catch (e) {
       this._log.error(
         `Error attempting to retrieve cache region names: ${toErrorStack(e)}`,
         {
           fn: this.getCacheRegionNames.name,
         }
-      );
+      )
     }
-    return [];
+    return []
   }
 
   /**
@@ -249,25 +249,25 @@ export class RedisCacheImpl implements RedisCache {
       // Try to get the value from Redis by key
       const keys = await this._redisClient.keys(
         `${buildCacheKeyRegionPrefix(cacheRegionName)}*`
-      );
-      const res = [];
+      )
+      const res = []
       for await (const key of keys) {
-        const ttlSeconds = await this._redisClient.ttl(key);
+        const ttlSeconds = await this._redisClient.ttl(key)
         res.push({
           cacheKey: extractKeyFromRegionPrefixedCacheKey(key),
           ttlSeconds: ttlSeconds,
-        });
+        })
       }
-      return res;
+      return res
     } catch (e) {
       this._log.error(
         `Error attempting to retrieve cache key names or TTL values for region ${cacheRegionName}: ${toErrorStack(
           e
         )}`,
         { fn: this.getCacheKeys.name }
-      );
+      )
     }
-    return [];
+    return []
   }
 
   /**
@@ -278,11 +278,11 @@ export class RedisCacheImpl implements RedisCache {
    */
   async invalidateCacheRegion(cacheRegionName: string): Promise<boolean> {
     try {
-      const keys = await this.getCacheKeys(cacheRegionName);
+      const keys = await this.getCacheKeys(cacheRegionName)
       for await (const key of keys) {
-        await this._redisClient.del(key.cacheKey);
+        await this._redisClient.del(key.cacheKey)
       }
-      return true;
+      return true
     } catch (e) {
       this._log.error(
         `Error attempting to invalidate cache region ${cacheRegionName}: ${toErrorStack(
@@ -291,9 +291,9 @@ export class RedisCacheImpl implements RedisCache {
         {
           fn: this.invalidateCacheRegion.name,
         }
-      );
+      )
     }
-    return false;
+    return false
   }
 
   /**
@@ -307,10 +307,10 @@ export class RedisCacheImpl implements RedisCache {
     cacheRegionName: string,
     cacheKey: string
   ): Promise<boolean> {
-    const key = buildRegionPrefixedCacheKey(cacheRegionName, cacheKey);
+    const key = buildRegionPrefixedCacheKey(cacheRegionName, cacheKey)
     try {
-      const res = await this._redisClient.del(key);
-      return res === 1;
+      const res = await this._redisClient.del(key)
+      return res === 1
     } catch (e) {
       this._log.error(
         `Error attempting to invalidate cache key ${cacheRegionName}: ${toErrorStack(
@@ -319,9 +319,9 @@ export class RedisCacheImpl implements RedisCache {
         {
           fn: this.invalidateCacheRegion.name,
         }
-      );
+      )
     }
-    return false;
+    return false
   }
 }
 
@@ -337,17 +337,17 @@ const fetchFromCache = async <T>(
 ): Promise<T | undefined> => {
   try {
     // Try to get the value from Redis by key
-    const cachedRes = await redisClient.get(cacheKey);
+    const cachedRes = await redisClient.get(cacheKey)
 
     // If a value is found, decode and return
-    return CacheCodec.decode<T>(cachedRes);
+    return CacheCodec.decode<T>(cachedRes)
   } catch (e) {
     throw new CacheError(
       `Error attempting to retrieve value from cache for ${cacheKey}`,
       e
-    );
+    )
   }
-};
+}
 
 /**
  * Perform a double-checked get/calculate/set operation.
@@ -371,12 +371,12 @@ const doubleCheckedCalcAndSetInCache = async <T>(
     const cachedValue: T | undefined = await fetchFromCache(
       redisClient,
       cacheKey
-    );
+    )
     if (cachedValue) {
       log.debug(
         `Value for ${cacheKey} found in cache during double check - returning value`
-      );
-      return cachedValue;
+      )
+      return cachedValue
     }
     return await readAndSetInCache(
       log,
@@ -384,14 +384,14 @@ const doubleCheckedCalcAndSetInCache = async <T>(
       cacheKey,
       cacheConfig,
       fnInvocation
-    );
+    )
   } catch (e) {
     throw new CacheError(
       `Error attempting to retrieve value from cache or calcAndSetInCache for ${cacheKey}`,
       e
-    );
+    )
   }
-};
+}
 
 /**
  * Read the value and set in the Redis cache region
@@ -409,21 +409,21 @@ const readAndSetInCache = async <T>(
   cacheConfig: CacheConfig,
   fnInvocation: AsyncFunctionInvocation<T>
 ): Promise<T> => {
-  let calculatedResult;
+  let calculatedResult
   try {
-    calculatedResult = await fnInvocation.readFn(...fnInvocation.args);
+    calculatedResult = await fnInvocation.readFn(...fnInvocation.args)
   } catch (e) {
     // If the read fails, don't poison the cache
     throw new CacheError(
       `Error calculating result after cache miss for ${cacheKey}`,
       e
-    );
+    )
   }
 
   // Only cache if the result is defined or non-null
   if (calculatedResult) {
     try {
-      setInCache(log, redisClient, cacheKey, cacheConfig, calculatedResult);
+      setInCache(log, redisClient, cacheKey, cacheConfig, calculatedResult)
     } catch (e) {
       log.error(
         `Error setting fetched result in Redis after cache miss for ${cacheKey}: ${toErrorStack(
@@ -432,7 +432,7 @@ const readAndSetInCache = async <T>(
         {
           fn: readAndSetInCache.name,
         }
-      );
+      )
     }
   } else {
     log.debug(
@@ -440,11 +440,11 @@ const readAndSetInCache = async <T>(
       {
         fn: readAndSetInCache.name,
       }
-    );
+    )
   }
 
-  return calculatedResult;
-};
+  return calculatedResult
+}
 
 const setInCache = async <T>(
   log: NptLogger,
@@ -455,19 +455,19 @@ const setInCache = async <T>(
 ): Promise<void> => {
   try {
     // Set in Redis with the specified TTL
-    const codec = codecRegistry.getCodecInstance(cacheConfig.codecId);
-    const encodedObject = codec.encode<T>(value);
+    const codec = codecRegistry.getCodecInstance(cacheConfig.codecId)
+    const encodedObject = codec.encode<T>(value)
     await redisClient.set(cacheKey, encodedObject, [
       EXPIRE_COMMAND,
       cacheConfig.ttlSeconds,
-    ]);
-    log.debug(`Cached ${cacheKey} with ttl of ${cacheConfig.ttlSeconds}s`);
+    ])
+    log.debug(`Cached ${cacheKey} with ttl of ${cacheConfig.ttlSeconds}s`)
   } catch (e) {
     log.error(
       `Error setting value in Redis for ${cacheKey}: ${toErrorStack(e)}`,
       {
         fn: readAndSetInCache.name,
       }
-    );
+    )
   }
-};
+}

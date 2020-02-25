@@ -1,10 +1,10 @@
-import { NptLogger } from '@node-power-tools/logging-tools';
-import { KeyGenStrategy, KeyGenFunctions } from '../../util';
+import { NptLogger } from '@node-power-tools/logging-tools'
+import { KeyGenStrategy, KeyGenFunctions } from '../../util'
 import {
   LockFactory,
   withLock,
   LockError,
-} from '@node-power-tools/concurrent-tools';
+} from '@node-power-tools/concurrent-tools'
 
 type LockDecoratorFunction = (
   cacheKeyGenStrategy: KeyGenStrategy,
@@ -38,33 +38,33 @@ export function buildLockDecorator(
       methodName: string,
       propertyDesciptor: PropertyDescriptor
     ): PropertyDescriptor {
-      const originalFunction = propertyDesciptor.value;
+      const originalFunction = propertyDesciptor.value
 
       propertyDesciptor.value = async function(this: any, ...args: any[]) {
         // Generate the key
         const lockKey = KeyGenFunctions[
           cacheKeyGenStrategy || KeyGenStrategy.HASH
-        ](keyGenArgs || [], args);
+        ](keyGenArgs || [], args)
         // Create the lock
-        const lock = lockFactory.createLock(lockKey, lockTtlSeconds);
+        const lock = lockFactory.createLock(lockKey, lockTtlSeconds)
         // Bind "this" to the callback
-        const boundOriginalFunction = originalFunction.bind(this);
+        const boundOriginalFunction = originalFunction.bind(this)
 
         try {
           logger.debug(
             `Attempting to acquire lock in decorator for key ${lock.getLockKey()}`,
             { methodName }
-          );
-          return await withLock(lock, boundOriginalFunction)(...args);
+          )
+          return await withLock(lock, boundOriginalFunction)(...args)
         } catch (e) {
           throw new LockError(
             `Error acquiring lock in decorator for key ${lock.getLockKey()}`,
             e
-          );
+          )
         }
-      };
+      }
 
-      return propertyDesciptor;
-    };
-  };
+      return propertyDesciptor
+    }
+  }
 }

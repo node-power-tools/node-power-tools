@@ -1,11 +1,11 @@
-import { Optional } from '../util';
-import { CodecRegistryError } from './errors';
+import { Optional } from '../util'
+import { CodecRegistryError } from './errors'
 
-export const CACHE_REGION_PREFIX = 'CACHE_';
-export const CACHE_KEY_DELIMITER = '::';
-export const CACHE_CODEC_DELIMITER = '@@';
-const REGION_NAME_REGEX = new RegExp(/^CACHE_(.*)::.*$/);
-const KEY_REGEX = new RegExp(/^CACHE_.*::(.*)$/);
+export const CACHE_REGION_PREFIX = 'CACHE_'
+export const CACHE_KEY_DELIMITER = '::'
+export const CACHE_CODEC_DELIMITER = '@@'
+const REGION_NAME_REGEX = new RegExp(/^CACHE_(.*)::.*$/)
+const KEY_REGEX = new RegExp(/^CACHE_.*::(.*)$/)
 
 /**
  * Cache serialization codec.
@@ -41,7 +41,7 @@ export abstract class CacheCodec {
   public encode<T>(rawObject: T): string {
     return `${this.getId()}${CACHE_CODEC_DELIMITER}${this.encodeInternal(
       rawObject
-    )}`;
+    )}`
   }
 
   /**
@@ -54,16 +54,16 @@ export abstract class CacheCodec {
     encodedObjectString: string | undefined | null
   ): Optional<T> {
     if (!encodedObjectString) {
-      return undefined;
+      return undefined
     }
-    const codecDelIdx = encodedObjectString.indexOf(CACHE_CODEC_DELIMITER);
+    const codecDelIdx = encodedObjectString.indexOf(CACHE_CODEC_DELIMITER)
     const codec = codecRegistry.getCodecInstance(
       encodedObjectString.substr(0, codecDelIdx)
-    );
+    )
     const encodedObj = encodedObjectString.substr(
       codecDelIdx + CACHE_CODEC_DELIMITER.length
-    );
-    return codec.decodeInternal(encodedObj);
+    )
+    return codec.decodeInternal(encodedObj)
   }
 }
 
@@ -80,27 +80,27 @@ export class CodecRegistry {
     if (this.codecByIdMap.has(codec.getId())) {
       throw new CodecRegistryError(
         `CodecRegistry already has a codec registered with id ${codec.getId()}`
-      );
+      )
     }
-    this.codecByIdMap.set(codec.getId(), codec);
-    this.codecByClassMap.set(typeof codec, codec);
+    this.codecByIdMap.set(codec.getId(), codec)
+    this.codecByClassMap.set(typeof codec, codec)
   }
 
   public getCodecInstance(codecId: string): CacheCodec {
-    const res = this.codecByIdMap.get(codecId);
+    const res = this.codecByIdMap.get(codecId)
     if (res == null) {
       throw new CodecRegistryError(
         `Codec with id ${codecId || 'EMPTY_CODEC_ID'} unknown to codec registry`
-      );
+      )
     }
-    return res;
+    return res
   }
 }
 
 /**
  * Global codec registry
  */
-export const codecRegistry = new CodecRegistry();
+export const codecRegistry = new CodecRegistry()
 
 /**
  * A simple, naive codec for encoding/decoding objects to/from their serialized form.
@@ -109,18 +109,18 @@ export class SimpleJsonCodec extends CacheCodec {
   public static ID = 'sjc';
 
   getId(): string {
-    return SimpleJsonCodec.ID;
+    return SimpleJsonCodec.ID
   }
 
   protected encodeInternal<T>(rawObject: T): string {
-    return JSON.stringify(rawObject);
+    return JSON.stringify(rawObject)
   }
 
   protected decodeInternal<T>(encodedObject: string): T {
-    return JSON.parse(encodedObject);
+    return JSON.parse(encodedObject)
   }
 }
-codecRegistry.registerCodec(new SimpleJsonCodec());
+codecRegistry.registerCodec(new SimpleJsonCodec())
 
 /**
  * Build a cache key region prefix
@@ -129,8 +129,8 @@ codecRegistry.registerCodec(new SimpleJsonCodec());
  * @return The prefix
  */
 export const buildCacheKeyRegionPrefix = (cacheRegion: string): string => {
-  return `${CACHE_REGION_PREFIX}${cacheRegion}${CACHE_KEY_DELIMITER}`;
-};
+  return `${CACHE_REGION_PREFIX}${cacheRegion}${CACHE_KEY_DELIMITER}`
+}
 
 /**
  * Unfortuntely the node-redis library provides no sugar for maintaining hash map TTLs so we can't use HSET with
@@ -144,17 +144,17 @@ export const buildRegionPrefixedCacheKey = (
   cacheRegion: string,
   cacheKey: string
 ): string => {
-  return `${buildCacheKeyRegionPrefix(cacheRegion)}${cacheKey}`;
-};
+  return `${buildCacheKeyRegionPrefix(cacheRegion)}${cacheKey}`
+}
 
 const extractRegexGroup = (tested: string, regex: RegExp): string => {
-  const matches = tested && regex.exec(tested);
+  const matches = tested && regex.exec(tested)
   if (matches && matches.length === 2) {
     // First match is full match, second match is first capture group :/
-    return matches[1];
+    return matches[1]
   }
-  return 'UNKNOWN';
-};
+  return 'UNKNOWN'
+}
 
 /**
  * Extract the cache region name from a cache key
@@ -165,8 +165,8 @@ const extractRegexGroup = (tested: string, regex: RegExp): string => {
 export const extractCacheRegionNameFromCacheKey = (
   cacheKey: string
 ): string => {
-  return extractRegexGroup(cacheKey, REGION_NAME_REGEX);
-};
+  return extractRegexGroup(cacheKey, REGION_NAME_REGEX)
+}
 
 /**
  * Extract the cache key name from a region prefixed cache key
@@ -177,5 +177,5 @@ export const extractCacheRegionNameFromCacheKey = (
 export const extractKeyFromRegionPrefixedCacheKey = (
   cacheKey: string
 ): string => {
-  return extractRegexGroup(cacheKey, KEY_REGEX);
-};
+  return extractRegexGroup(cacheKey, KEY_REGEX)
+}

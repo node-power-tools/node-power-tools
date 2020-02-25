@@ -1,8 +1,8 @@
-import { IHandyRedis } from 'handy-redis';
-import { LockFactory } from '../lock-factory';
-import { Lock, LockConfig } from '../lock';
-import { SimpleRedisLockImpl } from './redis-lock';
-import { NptLogger } from '@node-power-tools/logging-tools';
+import { IHandyRedis } from 'handy-redis'
+import { LockFactory } from '../lock-factory'
+import { Lock, LockConfig } from '../lock'
+import { SimpleRedisLockImpl } from './redis-lock'
+import { NptLogger } from '@node-power-tools/logging-tools'
 
 export interface RedisLockFactory extends LockFactory {}
 
@@ -19,9 +19,9 @@ export class RedisLockFactoryImpl implements RedisLockFactory {
     lockConfig: LockConfig,
     logger: NptLogger
   ) {
-    this._redisClient = redisClient;
-    this._lockConfig = lockConfig;
-    this._logger = logger;
+    this._redisClient = redisClient
+    this._lockConfig = lockConfig
+    this._logger = logger
   }
 
   public createLock(
@@ -38,6 +38,6 @@ export class RedisLockFactoryImpl implements RedisLockFactory {
       },
       lockKey,
       lockTtlSeconds
-    );
+    )
   }
 }
