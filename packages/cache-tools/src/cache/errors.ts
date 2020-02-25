@@ -1,11 +1,11 @@
 /**
  * Error thrown if cache operations fail
  */
-import { NPTError } from '../util';
+import { NPTError } from '../util'
 
 export class CacheError extends NPTError {
   constructor(message: string, cause?: Error) {
-    super(CacheError.name, message, cause);
+    super(CacheError.name, message, cause)
   }
 }
 
@@ -14,6 +14,6 @@ export class CacheError extends NPTError {
  */
 export class CodecRegistryError extends NPTError {
   constructor(message: string, cause?: Error) {
-    super(CodecRegistryError.name, message, cause);
+    super(CodecRegistryError.name, message, cause)
   }
 }

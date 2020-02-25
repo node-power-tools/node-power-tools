@@ -1,4 +1,4 @@
-import { LockError } from './errors';
+import { LockError } from './errors'
 
 /**
  * A simple mutex-like lock interface that supports retries via {@link #acquire}
@@ -68,26 +68,26 @@ export const withLock = <FT extends (...args: any[]) => any>(
   return async (...args: Parameters<FT>): Promise<ReturnType<FT>> => {
     try {
       // Acquire the lock
-      const locked = await lock.acquire();
+      const locked = await lock.acquire()
 
       if (locked) {
         // Do the work while we own the lock
-        return await asyncFn(...args);
+        return await asyncFn(...args)
       }
     } catch (e) {
       // Something bad happened while we tried to acquire the lock - throw in the towel
       throw new LockError(
         `Error acquiring lock for key ${lock.getLockKey()}`,
         e
-      );
+      )
     } finally {
       // Release the lock
-      lock.release();
+      lock.release()
     }
 
     // Lock is not owned after a lock attempt, so don't do any work
     throw new LockError(
       `Lock was not acquired for key ${lock.getLockKey()} so operation was not perfomed`
-    );
-  };
-};
+    )
+  }
+}

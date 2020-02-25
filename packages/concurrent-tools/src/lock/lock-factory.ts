@@ -1,4 +1,4 @@
-import { Lock, LockConfig } from './lock';
+import { Lock, LockConfig } from './lock'
 
 /**
  * A factory for {@link Lock}s

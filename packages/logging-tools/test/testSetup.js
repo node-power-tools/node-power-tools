@@ -1,3 +1,3 @@
-require('reflect-metadata');
+require('reflect-metadata')
 
-jest.setTimeout(20000);
+jest.setTimeout(20000)
