@@ -36,8 +36,15 @@
     "singleQuote": true
   },
   "dependencies": {
+    "@js-joda/core": "^2.0.0",
+    "@types/uuid": "^3.4.7",
+    "@types/verror": "^1.10.3",
+    "reflect-metadata": "^0.1.13",
+    "uuid": "^3.4.0",
+    "verror": "^1.10.0"
   },
   "optionalDependencies": {
+    "handy-redis": "^1.8.0"
   },
   "bugs": {
     "url": "https://github.com/bsantare/node-power-tools/issues"
