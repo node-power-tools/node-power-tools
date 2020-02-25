@@ -45,6 +45,7 @@
   "dependencies": {
     "cache-tools": "file:packages/cache-tools",
     "concurrent-tools": "file:packages/concurrent-tools",
+    "logging-tools": "file:packages/logging-tools",
     "redis-tools": "file:packages/redis-tools"
   },
   "version": "0.0.1-alpha.14",
