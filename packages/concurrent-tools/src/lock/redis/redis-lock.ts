@@ -1,10 +1,10 @@
 import { ChronoUnit, Instant } from '@js-joda/core';
 import { IHandyRedis } from 'handy-redis';
 import uuid from 'uuid';
-import { NptLogger } from '../../logger';
 import { toErrorStack, sleep } from '../../util';
 import { Lock, LockConfig } from '../lock';
 import { LockError } from '../errors';
+import { NptLogger } from '@node-power-tools/logging-tools';
 
 export const REDIS_LOCK_PREFIX = 'LOCK_';
 export const SUCCESS_RES = 'OK';

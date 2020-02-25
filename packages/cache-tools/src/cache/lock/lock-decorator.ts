@@ -1,8 +1,10 @@
-import { NptLogger } from '../logger';
-import { KeyGenFunctions, KeyGenStrategy } from '../util';
-import { LockError } from './errors';
-import { LockFactory } from './lock-factory';
-import { withLock } from './lock';
+import { NptLogger } from '@node-power-tools/logging-tools';
+import { KeyGenStrategy, KeyGenFunctions } from '../../util';
+import {
+  LockFactory,
+  withLock,
+  LockError,
+} from '@node-power-tools/concurrent-tools';
 
 type LockDecoratorFunction = (
   cacheKeyGenStrategy: KeyGenStrategy,

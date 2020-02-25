@@ -1,7 +1,7 @@
-import { NptLogger } from '../logger';
 import { AsyncFunction, Optional } from '../util';
 import { CacheError } from './errors';
 import { SimpleJsonCodec } from './cache-codec';
+import { NptLogger } from '@node-power-tools/logging-tools';
 
 /**
  * Cache configuration for a cache request.

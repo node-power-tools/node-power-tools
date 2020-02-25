@@ -1,8 +1,8 @@
 import { IHandyRedis } from 'handy-redis';
-import { NptLogger } from '../../logger';
 import { LockFactory } from '../lock-factory';
 import { Lock, LockConfig } from '../lock';
 import { SimpleRedisLockImpl } from './redis-lock';
+import { NptLogger } from '@node-power-tools/logging-tools';
 
 export interface RedisLockFactory extends LockFactory {}
 
