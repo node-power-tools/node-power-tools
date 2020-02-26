@@ -219,8 +219,9 @@ export class RedisCacheImpl implements RedisCache {
   async invalidateCacheRegion(cacheRegionName: string): Promise<boolean> {
     try {
       const keys = await this.getCacheKeys(cacheRegionName)
+      this._log.debug(`invalidateCacheRegion: Invalidating ${keys.length} cache keys for cache region ${cacheRegionName}`)
       for await (const key of keys) {
-        await this._redisClient.del(key.cacheKey)
+        await this.invalidateCacheKey(cacheRegionName, key.cacheKey)
       }
       return true
     } catch (e) {
@@ -241,6 +242,7 @@ export class RedisCacheImpl implements RedisCache {
   async invalidateCacheKey(cacheRegionName: string, cacheKey: string): Promise<boolean> {
     const key = buildRegionPrefixedCacheKey(cacheRegionName, cacheKey)
     try {
+      this._log.debug(`invalidateCacheKey: Invalidating cache key ${key}`)
       const res = await this._redisClient.del(key)
       return res === 1
     } catch (e) {
