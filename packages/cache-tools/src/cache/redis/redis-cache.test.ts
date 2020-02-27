@@ -1,16 +1,15 @@
-import { mock, mockClear, mockReset } from 'jest-mock-extended';
+import { mock, mockClear } from 'jest-mock-extended';
 import { buildPromise } from '../../../../../test/promise-util';
 import { DEFAULT_CACHE_CONFIGURATION } from '../cache';
 import { buildRegionPrefixedCacheKey, SimpleJsonCodec } from '../cache-codec';
 import { DEFAULT_CACHE_REGION_NAME, RedisCacheImpl } from './redis-cache';
+import { IHandyRedis } from 'handy-redis';
+import { LockFactory } from '@node-power-tools/concurrent-tools';
+import { NptLogger } from '@node-power-tools/logging-tools';
 
 const mockRedisClient = mock<IHandyRedis>();
 const mockRedisLockFactory = mock<LockFactory>();
 const mockLogger = mock<NptLogger>();
-
-import { IHandyRedis } from 'handy-redis';
-import { LockFactory } from '@node-power-tools/concurrent-tools';
-import { NptLogger } from '@node-power-tools/logging-tools';
 
 describe('redis-cache tests', () => {
   const tested = new RedisCacheImpl(mockRedisClient, mockRedisLockFactory, mockLogger);
@@ -20,7 +19,6 @@ describe('redis-cache tests', () => {
   const errorMsg = 'Boom goes the dynamite!';
 
   afterEach(() => {
-    mockReset(mockRedisClient);
     mockClear(mockRedisClient);
   });
 
@@ -79,14 +77,10 @@ describe('redis-cache tests', () => {
     });
 
     it('happy path default region cached value found', async () => {
-      // FIXME: No idea why this mock won't return the return value.  The
-      //        expectation below proves the proper args are being used
-      // mockRedisClient.get.calledWith(expectedDefaultRegionKey).mockReturnValue(encodedRes)
-      mockRedisClient.get.mockReturnValue(encodedRes);
+      mockRedisClient.get.calledWith(expectedDefaultRegionKey).mockReturnValue(encodedRes);
 
       const res = await tested.get(key);
 
-      expect(mockRedisClient.get).toHaveBeenCalledWith(expectedDefaultRegionKey);
       expect(res).toEqual(expected);
     });
 
