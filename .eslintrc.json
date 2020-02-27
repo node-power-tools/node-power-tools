@@ -5,7 +5,8 @@
     "jest/globals": true
   },
   "extends": [
-    "plugin:@typescript-eslint/recommended"
+    "plugin:@typescript-eslint/recommended",
+    "plugin:jest/recommended"
   ],
   "globals": {
     "Atomics": "readonly",
@@ -97,7 +98,15 @@
         "args": "after-used",
         "argsIgnorePattern": "^_"
       }
-    ]
+    ],
+    "max-len": ["error", {
+        "code": 130,
+        "comments": 140,
+        "ignoreUrls": true
+      }
+    ],
+    "jest/no-try-expect": "off",
+    "jest/no-jasmine-globals": "off"
   },
   "ignorePatterns": [
     "build",
