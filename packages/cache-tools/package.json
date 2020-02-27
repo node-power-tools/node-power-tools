@@ -33,7 +33,8 @@
     "test:unit": "jest"
   },
   "prettier": {
-    "singleQuote": true
+    "singleQuote": true,
+    "printWidth": 120
   },
   "dependencies": {
     "@js-joda/core": "^2.0.0",
