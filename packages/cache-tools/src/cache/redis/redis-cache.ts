@@ -6,7 +6,7 @@ import {
   CacheConfig,
   DEFAULT_CACHE_CONFIGURATION,
   PutRequest,
-  ReadThroughRequest,
+  ReadThroughRequest
 } from '../cache';
 import { CacheKeyEntry, CacheManager } from '../cache-manager';
 import {
@@ -15,7 +15,7 @@ import {
   CacheCodec,
   codecRegistry,
   extractCacheRegionNameFromCacheKey,
-  extractKeyFromRegionPrefixedCacheKey,
+  extractKeyFromRegionPrefixedCacheKey
 } from '../cache-codec';
 import { CacheError } from '../errors';
 import { RedisLockFactory, withLock } from '@node-power-tools/concurrent-tools/dist';
@@ -55,7 +55,7 @@ export class RedisCacheImpl implements RedisCache {
   public static mergeCacheConfigWithDefault(cacheConfig?: Partial<CacheConfig>): CacheConfig {
     return {
       ...DEFAULT_CACHE_CONFIGURATION,
-      ...(cacheConfig || {}),
+      ...(cacheConfig || {})
     };
   }
 
@@ -106,7 +106,7 @@ export class RedisCacheImpl implements RedisCache {
     cacheRegion = DEFAULT_CACHE_REGION_NAME,
     cacheKey,
     fnInvocation,
-    cacheConfig = {},
+    cacheConfig = {}
   }: ReadThroughRequest<T>): Promise<T> {
     // Spread the default cache options to support sparsely populated cache options
     const mergedCacheConfig = RedisCacheImpl.mergeCacheConfigWithDefault(cacheConfig);
@@ -123,7 +123,7 @@ export class RedisCacheImpl implements RedisCache {
       }
     } catch (e) {
       this._log.error(`Error attempting to retrieve value for key ${cacheKey}`, {
-        fn: this.readThrough.name,
+        fn: this.readThrough.name
       });
     }
 
@@ -181,7 +181,7 @@ export class RedisCacheImpl implements RedisCache {
       return Array.from(uniqueRegions);
     } catch (e) {
       this._log.error(`Error attempting to retrieve cache region names: ${toErrorStack(e)}`, {
-        fn: this.getCacheRegionNames.name,
+        fn: this.getCacheRegionNames.name
       });
     }
     return [];
@@ -201,7 +201,7 @@ export class RedisCacheImpl implements RedisCache {
         const ttlSeconds = await this._redisClient.ttl(key);
         res.push({
           cacheKey: extractKeyFromRegionPrefixedCacheKey(key),
-          ttlSeconds: ttlSeconds,
+          ttlSeconds: ttlSeconds
         });
       }
       return res;
@@ -232,7 +232,7 @@ export class RedisCacheImpl implements RedisCache {
       return true;
     } catch (e) {
       this._log.error(`Error attempting to invalidate cache region ${cacheRegionName}: ${toErrorStack(e)}`, {
-        fn: this.invalidateCacheRegion.name,
+        fn: this.invalidateCacheRegion.name
       });
     }
     return false;
@@ -253,7 +253,7 @@ export class RedisCacheImpl implements RedisCache {
       return res === 1;
     } catch (e) {
       this._log.error(`Error attempting to invalidate cache key ${cacheRegionName}: ${toErrorStack(e)}`, {
-        fn: this.invalidateCacheRegion.name,
+        fn: this.invalidateCacheRegion.name
       });
     }
     return false;
@@ -338,12 +338,12 @@ const readAndSetInCache = async <T>(
       setInCache(log, redisClient, cacheKey, cacheConfig, calculatedResult);
     } catch (e) {
       log.error(`Error setting fetched result in Redis after cache miss for ${cacheKey}: ${toErrorStack(e)}`, {
-        fn: readAndSetInCache.name,
+        fn: readAndSetInCache.name
       });
     }
   } else {
     log.debug(`Not caching read result in Redis  - value is undefined after read for key ${cacheKey}`, {
-      fn: readAndSetInCache.name,
+      fn: readAndSetInCache.name
     });
   }
 
@@ -365,7 +365,7 @@ const setInCache = async <T>(
     log.debug(`Cached ${cacheKey} with ttl of ${cacheConfig.ttlSeconds}s`);
   } catch (e) {
     log.error(`Error setting value in Redis for ${cacheKey}: ${toErrorStack(e)}`, {
-      fn: readAndSetInCache.name,
+      fn: readAndSetInCache.name
     });
   }
 };

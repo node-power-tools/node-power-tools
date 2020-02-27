@@ -50,12 +50,13 @@
   "version": "0.0.1-alpha.14",
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged && fix:eslint"
+      "pre-commit": "lint-staged"
     }
   },
   "lint-staged": {
-    "*.{js,md,css,html,ts,tsx}": [
-      "prettier --trailing-comma es5 --single-quote --write"
+    "*.{js,md,ts}": [
+      "prettier --write",
+      "git add"
     ]
   }
 }

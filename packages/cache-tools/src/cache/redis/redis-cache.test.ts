@@ -35,7 +35,7 @@ describe('redis-cache tests', () => {
       const config = {
         ttlSeconds: 20,
         doubleCheckedPut: true,
-        codecId: 'specialCodec',
+        codecId: 'specialCodec'
       };
 
       const res = RedisCacheImpl.mergeCacheConfigWithDefault(config);
