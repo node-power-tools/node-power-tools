@@ -54,9 +54,7 @@
     }
   },
   "lint-staged": {
-    "*.{js,md,ts}": [
-      "eslint --fix",
-      "git add"
-    ]
+    "*.{ts,tsx,js,jsx}": "eslint --fix",
+    "*.{ts,tsx,js,jsx,md,yaml,yml,json}": "prettier --write --config .prettierrc.yaml"
   }
 }

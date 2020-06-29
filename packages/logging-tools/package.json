@@ -24,15 +24,17 @@
     "fix:eslint": "eslint --fix \"src/**/*.{ts,js}\"",
     "publish": "yarn publish",
     "sort:packages": "npx sort-package-json",
-    "test": "yarn test:unit",
+    "test": "run-p --print-label test:ts test:format test:lint test:unit",
+    "test:format": "prettier --check --config .prettierrc.yaml .",
+    "test:lint": "eslint . --cache --ext js,jsx,ts,tsx",
+    "test:ts": "tsc -p tsconfig.json",
     "test:unit": "jest"
   },
   "prettier": {
     "singleQuote": true,
     "printWidth": 120
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "optionalDependencies": {
     "winston": "^3.2.1"
   },
