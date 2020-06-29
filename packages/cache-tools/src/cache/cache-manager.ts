@@ -1,7 +1,7 @@
 export type CacheKeyEntry = {
-  cacheKey: string;
-  ttlSeconds: number;
-};
+  cacheKey: string
+  ttlSeconds: number
+}
 
 /**
  * Cache manager interface
@@ -12,14 +12,14 @@ export interface CacheManager {
    *
    * @return {@link string[]} of cache region names
    */
-  getCacheRegionNames(): Promise<string[]>;
+  getCacheRegionNames(): Promise<string[]>
 
   /**
    * Get active cache keys with their TTL.
    *
    * @return {@link CacheKeyEntry[]}
    */
-  getCacheKeys(cacheRegionName: string): Promise<CacheKeyEntry[]>;
+  getCacheKeys(cacheRegionName: string): Promise<CacheKeyEntry[]>
 
   /**
    * Invalidate a cache region.
@@ -27,7 +27,7 @@ export interface CacheManager {
    * @param cacheRegionName The cache region to invalidate
    * @return true if invalidated, false otherwise
    */
-  invalidateCacheRegion(cacheRegionName: string): Promise<boolean>;
+  invalidateCacheRegion(cacheRegionName: string): Promise<boolean>
 
   /**
    * Invalidate a cache key.
@@ -36,8 +36,5 @@ export interface CacheManager {
    * @param cacheKey The cache key to invalidate
    * @return true if invalidated, false otherwise
    */
-  invalidateCacheKey(
-    cacheRegionName: string,
-    cacheKey: string
-  ): Promise<boolean>;
+  invalidateCacheKey(cacheRegionName: string, cacheKey: string): Promise<boolean>
 }

@@ -11,14 +11,14 @@ export interface Lock {
    *
    * @return true if the lock was acquired, false otherwise
    */
-  tryAcquire(): Promise<boolean>;
+  tryAcquire(): Promise<boolean>
 
   /**
    * Acquire a lock for up to the retries/timeout configured by the underlying implementation
    *
    * @return true if the lock was acquired, false otherwise
    */
-  acquire(): Promise<boolean>;
+  acquire(): Promise<boolean>
 
   /**
    * Release a lock - this will release the lock held by the underlying implementation before the TTL
@@ -27,7 +27,7 @@ export interface Lock {
    * @return true if the lock was released successfully, false if unknown as to whether the lock was
    * released successfully
    */
-  release(): Promise<boolean>;
+  release(): Promise<boolean>
 
   /**
    * Release a lock - this will release the lock held by the underlying implementation before the TTL
@@ -39,21 +39,21 @@ export interface Lock {
    * @return true if the lock was released successfully, false if unknown as to whether the lock was
    * released successfully
    */
-  release(quiet: boolean): Promise<boolean>;
+  release(quiet: boolean): Promise<boolean>
 
   /**
    * Get the underlying lock implementation's key
    */
-  getLockKey(): string;
+  getLockKey(): string
 }
 
 /**
  * Configuration for locks
  */
 export type LockConfig = {
-  retryDelayMs: number;
-  retryJitterMs: number;
-};
+  retryDelayMs: number
+  retryJitterMs: number
+}
 
 /**
  * Functional wrapper for lock operations
@@ -63,7 +63,7 @@ export type LockConfig = {
  */
 export const withLock = <FT extends (...args: any[]) => any>(
   lock: Lock,
-  asyncFn: FT
+  asyncFn: FT,
 ): ((...funcArgs: Parameters<FT>) => Promise<ReturnType<FT>>) => {
   return async (...args: Parameters<FT>): Promise<ReturnType<FT>> => {
     try {
@@ -76,18 +76,13 @@ export const withLock = <FT extends (...args: any[]) => any>(
       }
     } catch (e) {
       // Something bad happened while we tried to acquire the lock - throw in the towel
-      throw new LockError(
-        `Error acquiring lock for key ${lock.getLockKey()}`,
-        e
-      )
+      throw new LockError(`Error acquiring lock for key ${lock.getLockKey()}`, e)
     } finally {
       // Release the lock
       lock.release()
     }
 
     // Lock is not owned after a lock attempt, so don't do any work
-    throw new LockError(
-      `Lock was not acquired for key ${lock.getLockKey()} so operation was not perfomed`
-    )
+    throw new LockError(`Lock was not acquired for key ${lock.getLockKey()} so operation was not perfomed`)
   }
 }

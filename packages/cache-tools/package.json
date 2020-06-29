@@ -27,10 +27,11 @@
     "build:check": "tsc --noEmit",
     "clean": "rimraf dist/*",
     "fix:eslint": "eslint --fix \"src/**/*.{ts,js}\"",
+    "format": "prettier --write --config .prettierrc.yaml \"./**/*\"",
     "publish": "yarn publish",
     "sort:packages": "npx sort-package-json",
     "test": "run-p --print-label test:ts test:format test:lint test:unit",
-    "test:format": "prettier --check --config .prettierrc.yaml .",
+    "test:format": "prettier --check --config .prettierrc.yaml \"./**/*\"",
     "test:lint": "eslint . --cache --ext js,ts,",
     "test:ts": "tsc -p tsconfig.json",
     "test:unit": "jest"

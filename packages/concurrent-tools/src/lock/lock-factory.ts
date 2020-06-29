@@ -11,9 +11,5 @@ export interface LockFactory {
    * @param lockTtlSeconds TTL in seconds for the lock object
    * @param lockConfig An optional lock configuration that overrides the default configuration
    */
-  createLock(
-    lockKey: string,
-    lockTtlSeconds: number,
-    lockConfig?: Partial<LockConfig>
-  ): Lock;
+  createLock(lockKey: string, lockTtlSeconds: number, lockConfig?: Partial<LockConfig>): Lock
 }

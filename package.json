@@ -7,6 +7,7 @@
   "scripts": {
     "bootstrap": "lerna bootstrap",
     "pretest": "eslint packages",
+    "format": "lerna run format",
     "test": "lerna run test",
     "clean": "lerna run clean",
     "build": "lerna run build",
