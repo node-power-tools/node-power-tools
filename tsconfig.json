@@ -1,11 +1,9 @@
 {
   "compilerOptions": {
     "target": "es6",
-    "lib": [
-      "es2020"
-    ],
+    "lib": ["es2020"],
     "moduleResolution": "node",
-    "module": "commonjs",
+    "module": "esnext",
     "declaration": true,
     "inlineSourceMap": true,
     "esModuleInterop": true /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */,
@@ -36,19 +34,9 @@
     "experimentalDecorators": true /* Enables experimental support for ES7 decorators. */,
     "emitDecoratorMetadata": true /* Enables experimental support for emitting type metadata for decorators. */,
 
-    "types": [
-      "reflect-metadata",
-      "jest",
-      "node"
-    ]
+    "types": ["reflect-metadata", "jest", "node"]
   },
-  "include": [
-    "src/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "**/*.test.ts",
-    "dist"
-  ],
+  "include": ["./augmentations/*.d.ts", "**/*.ts"],
+  "exclude": ["node_modules", "**/*.test.ts", "**/*.spec.ts", "dist"],
   "compileOnSave": false
 }

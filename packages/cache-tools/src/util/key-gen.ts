@@ -1,4 +1,5 @@
 import { createHash } from 'crypto'
+
 import { CacheError } from '../cache'
 
 export enum KeyGenStrategy {
@@ -27,10 +28,9 @@ export const KeyGenFunctions = {
    */
   [KeyGenStrategy.IDENTITY]: (keyGenArgs: any[], args: any[]): string => {
     if (keyGenArgs.length != 1) {
-      throw new CacheError(
-        'keyGenArgs must contain at least one argument index for strategy IDENTITY'
-      )
+      throw new CacheError('keyGenArgs must contain at least one argument index for strategy IDENTITY')
     }
+
     return args[0]
   },
 
@@ -41,8 +41,10 @@ export const KeyGenFunctions = {
     if (args.length == 0) {
       return SCALAR_KEY
     }
+
     const hash = createHash('md5')
-    args.forEach(curArg => hash.update(curArg))
+    args.forEach((curArg) => hash.update(curArg))
+
     return hash.digest('base64')
   },
 
@@ -51,12 +53,9 @@ export const KeyGenFunctions = {
    */
   [KeyGenStrategy.PICK]: (keyGenArgs: any[], args: any[]): string => {
     if (keyGenArgs.length == 0) {
-      throw new CacheError(
-        'keyGenArgs must contain at least one argument index for strategy PICK'
-      )
+      throw new CacheError('keyGenArgs must contain at least one argument index for strategy PICK')
     }
-    return args
-      .filter((_val, index) => keyGenArgs.indexOf(index) >= 0)
-      .join('_')
+
+    return args.filter((_val, index) => keyGenArgs.indexOf(index) >= 0).join('_')
   },
 }

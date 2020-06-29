@@ -1,11 +1,12 @@
+import { LockFactory } from '@node-power-tools/concurrent-tools'
+import { NptLogger } from '@node-power-tools/logging-tools'
+import { IHandyRedis } from 'handy-redis'
 import { mock, mockClear } from 'jest-mock-extended'
+
 import { buildPromise } from '../../../../../test/promise-util'
 import { DEFAULT_CACHE_CONFIGURATION } from '../cache'
 import { buildRegionPrefixedCacheKey, SimpleJsonCodec } from '../cache-codec'
 import { DEFAULT_CACHE_REGION_NAME, RedisCacheImpl } from './redis-cache'
-import { IHandyRedis } from 'handy-redis'
-import { LockFactory } from '@node-power-tools/concurrent-tools'
-import { NptLogger } from '@node-power-tools/logging-tools'
 
 const mockRedisClient = mock<IHandyRedis>()
 const mockRedisLockFactory = mock<LockFactory>()
@@ -35,7 +36,7 @@ describe('redis-cache tests', () => {
       const config = {
         ttlSeconds: 20,
         doubleCheckedPut: true,
-        codecId: 'specialCodec'
+        codecId: 'specialCodec',
       }
 
       const res = RedisCacheImpl.mergeCacheConfigWithDefault(config)
@@ -93,6 +94,7 @@ describe('redis-cache tests', () => {
         await tested.get(key, region)
         fail('Should not get here')
       } catch (e) {
+        // eslint-disable-next-line jest/no-try-expect
         expect(e.message).toEqual(expect.stringContaining(errorMsg))
       }
     })

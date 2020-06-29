@@ -1,11 +1,12 @@
 import { Logger } from 'winston'
+
 import { NptLogger } from './logger'
 
 /**
  * A Winston logger wrapper
  */
 export class WinstonLogger implements NptLogger {
-  readonly _wrapped: Logger;
+  readonly _wrapped: Logger
 
   private constructor(wrapped: Logger) {
     this._wrapped = wrapped
@@ -15,14 +16,11 @@ export class WinstonLogger implements NptLogger {
     return new WinstonLogger(logger)
   }
 
-  private handleLogMessage = (
-    level: string,
-    message: string,
-    ...metadata: any[]
-  ): WinstonLogger => {
+  private handleLogMessage = (level: string, message: string, ...metadata: any[]): WinstonLogger => {
     this._wrapped.log(level, message, metadata)
+
     return this
-  };
+  }
 
   all(msg: string, ...metadata: any[]): WinstonLogger {
     return this.handleLogMessage('silly', msg, metadata)

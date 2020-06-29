@@ -1,10 +1,11 @@
 import { ChronoUnit, Instant } from '@js-joda/core'
+import { NptLogger } from '@node-power-tools/logging-tools'
 import { IHandyRedis } from 'handy-redis'
 import uuid from 'uuid'
+
 import { toErrorStack, sleep } from '../../util'
-import { Lock, LockConfig } from '../lock'
 import { LockError } from '../errors'
-import { NptLogger } from '@node-power-tools/logging-tools'
+import { Lock, LockConfig } from '../lock'
 
 export const REDIS_LOCK_PREFIX = 'LOCK_'
 export const SUCCESS_RES = 'OK'
@@ -26,27 +27,27 @@ const DELETE_KEY_IF_VALUE_MATCH_CMD = `
 /**
  * Marker interface for Redis locks
  */
-export interface RedisLock extends Lock {}
+export type RedisLock = Lock
 
 /**
  * A simple, non-distributed Redis lock (mutex) implementation that supports retries if the lock is currently
  * held by another client.
  */
 export class SimpleRedisLockImpl implements RedisLock {
-  private readonly _log: NptLogger;
-  private readonly _redisClient: IHandyRedis;
-  private readonly _lockConfig: LockConfig;
-  private readonly _lockKey: string;
-  private readonly _lockTtlSeconds: number;
-  private readonly lockUuid = uuid.v4();
-  private locked = false;
+  private readonly _log: NptLogger
+  private readonly _redisClient: IHandyRedis
+  private readonly _lockConfig: LockConfig
+  private readonly _lockKey: string
+  private readonly _lockTtlSeconds: number
+  private readonly lockUuid = uuid.v4()
+  private locked = false
 
   constructor(
     log: NptLogger,
     redisClient: IHandyRedis,
     lockConfig: LockConfig,
     lockKey: string,
-    lockTtlSeconds: number
+    lockTtlSeconds: number,
   ) {
     this._log = log
     this._redisClient = redisClient
@@ -56,10 +57,7 @@ export class SimpleRedisLockImpl implements RedisLock {
   }
 
   calcRetrySleepTime(): number {
-    return (
-      this._lockConfig.retryDelayMs +
-      Math.floor(Math.random() * this._lockConfig.retryJitterMs)
-    )
+    return this._lockConfig.retryDelayMs + Math.floor(Math.random() * this._lockConfig.retryJitterMs)
   }
 
   calcEndRetryInstant(startInstant: Instant): Instant {
@@ -73,20 +71,19 @@ export class SimpleRedisLockImpl implements RedisLock {
   public async tryAcquire(): Promise<boolean> {
     try {
       // Try to acquire the lock
-      const res = await this._redisClient.set(
-        this._lockKey,
-        this.lockUuid,
-        ['EX', this._lockTtlSeconds],
-        'NX'
-      )
+      const res = await this._redisClient.set(this._lockKey, this.lockUuid, ['EX', this._lockTtlSeconds], 'NX')
+
       // Successful?
       this.locked = res === SUCCESS_RES
+
       return this.locked
     } catch (e) {
       const msg = `Error attempting tryLock for key ${this._lockKey}`
+
       this._log.error(`${msg}: ${toErrorStack(e)}`, {
         fn: this.tryAcquire.name,
       })
+
       throw new LockError(msg, e)
     }
   }
@@ -106,10 +103,10 @@ export class SimpleRedisLockImpl implements RedisLock {
         if (!lockAcquired) {
           // If timed out, give up
           timedOut = Instant.now().isAfter(ttlExpiredInstant)
+
           if (timedOut) {
-            this._log.error(
-              `Timed out during tryLock for key ${this._lockKey}, { fn: this.acquire.name }`
-            )
+            this._log.error(`Timed out during tryLock for key ${this._lockKey}, { fn: this.acquire.name }`)
+
             break
           }
 
@@ -117,12 +114,7 @@ export class SimpleRedisLockImpl implements RedisLock {
           await sleep(this.calcRetrySleepTime())
         } else {
           // We successfully acquired the lock
-          this._log.debug(
-            `Lock acquired after ${startInstant.until(
-              Instant.now(),
-              ChronoUnit.MILLIS
-            )}ms`
-          )
+          this._log.debug(`Lock acquired after ${startInstant.until(Instant.now(), ChronoUnit.MILLIS)}ms`)
         }
       }
     } catch (e) {
@@ -139,42 +131,36 @@ export class SimpleRedisLockImpl implements RedisLock {
     // Only do the work if locked
     if (this.locked) {
       let success = false
+
       try {
         // Execute the Lua script to unlock if this lock owns the lock key
-        const res = await this._redisClient.eval(
-          DELETE_KEY_IF_VALUE_MATCH_CMD,
-          1,
-          [this._lockKey],
-          [this.lockUuid]
-        )
+        const res = await this._redisClient.eval(DELETE_KEY_IF_VALUE_MATCH_CMD, 1, [this._lockKey], [this.lockUuid])
+
         success = res === SUCCESS_RES
+
         if (success) {
           this.locked = false
+
           this._log.debug(`Lock released for key ${this._lockKey}`, {
             fn: this.release.name,
           })
         }
       } catch (e) {
-        this._log.error(
-          `Error attempting to release lock for key ${
-            this._lockKey
-          }: ${toErrorStack(e)}`,
-          { fn: this.release.name }
-        )
+        this._log.error(`Error attempting to release lock for key ${this._lockKey}: ${toErrorStack(e)}`, {
+          fn: this.release.name,
+        })
       }
 
       if (!quiet && !success) {
-        throw new LockError(
-          `Lock was not released successfully for key ${this._lockKey}`
-        )
+        throw new LockError(`Lock was not released successfully for key ${this._lockKey}`)
       }
 
       return success
     } else {
-      this._log.warn(
-        `Attempted to release lock that was not locked for key ${this._lockKey}`,
-        { fn: this.release.name }
-      )
+      this._log.warn(`Attempted to release lock that was not locked for key ${this._lockKey}`, {
+        fn: this.release.name,
+      })
+
       return true
     }
   }

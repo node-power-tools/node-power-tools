@@ -1,21 +1,15 @@
-import { KeyGenFunctions, KeyGenStrategy } from '../util'
-import { CacheError } from './errors'
-import {
-  Cache,
-  CacheConfig,
-  PartialCacheConfig,
-  withReadThroughCache,
-} from './cache'
 import { NptLogger } from '@node-power-tools/logging-tools'
+
+import { KeyGenFunctions, KeyGenStrategy } from '../util'
+import { Cache, CacheConfig, PartialCacheConfig, withReadThroughCache } from './cache'
+import { CacheError } from './errors'
 
 export type KeyGeneratorFunction = (
   keyGenStrategy?: KeyGenStrategy,
   keyGenArgs?: any[],
-  regionName?: string
-) => Function;
-export type CacheConfigLookupFunction = (
-  cacheName: string
-) => NonNullable<CacheConfig>;
+  regionName?: string,
+) => Function
+export type CacheConfigLookupFunction = (cacheName: string) => NonNullable<CacheConfig>
 
 /**
  * Build a cache decorator function
@@ -27,7 +21,7 @@ export type CacheConfigLookupFunction = (
 export function buildCacheDecorator(
   cache: Cache,
   cacheConfigLookupFunction: CacheConfigLookupFunction,
-  logger: NptLogger
+  logger: NptLogger,
 ): KeyGeneratorFunction {
   /**
    * A decorator to wrap a method with read through caching
@@ -40,39 +34,38 @@ export function buildCacheDecorator(
     cacheKeyGenStrategy?: KeyGenStrategy,
     keyGenArgs?: any[],
     regionName?: string,
-    cacheConfiguration?: PartialCacheConfig
+    cacheConfiguration?: PartialCacheConfig,
   ): Function {
     return function(
       target: Record<string, any>,
       methodName: string,
-      propertyDesciptor: PropertyDescriptor
+      propertyDesciptor: PropertyDescriptor,
     ): PropertyDescriptor {
       const parentClassName = target?.constructor.name || ''
       const originalFunction = propertyDesciptor.value
+
       propertyDesciptor.value = async function(this: any, ...args: any[]) {
         // Default the region name to the method name if not defined
-        const cacheRegionName =
-          regionName || `${parentClassName}#${methodName}`
+        const cacheRegionName = regionName || `${parentClassName}#${methodName}`
+
         // Generate the cache key
-        const cacheKey = KeyGenFunctions[
-          cacheKeyGenStrategy || KeyGenStrategy.HASH
-        ](keyGenArgs || [], args)
+        const cacheKey = KeyGenFunctions[cacheKeyGenStrategy || KeyGenStrategy.HASH](keyGenArgs || [], args)
+
         // Look up or default the cache configuration.  Specified cache configuration will override the config looked up.
         const mergedCacheConfig = {
           ...cacheConfigLookupFunction(cacheRegionName),
           ...(cacheConfiguration || {}),
         }
+
         // Bind "this" to the callback
         const boundOriginalFunction = originalFunction.bind(this)
 
         try {
-          logger.debug(
-            `Attempting to read through cache in decorator for key ${cacheKey}`,
-            { methodName }
-          )
+          logger.debug(`Attempting to read through cache in decorator for key ${cacheKey}`, { methodName })
+
           return await withReadThroughCache(cache, {
             cacheRegion: cacheRegionName,
-            cacheKey: cacheKey,
+            cacheKey,
             fnInvocation: {
               readFn: boundOriginalFunction,
               args,
@@ -80,10 +73,7 @@ export function buildCacheDecorator(
             cacheConfig: mergedCacheConfig,
           })(...args)
         } catch (e) {
-          throw new CacheError(
-            `Error attempting to read through cache in decorator for key ${cacheKey}`,
-            e
-          )
+          throw new CacheError(`Error attempting to read through cache in decorator for key ${cacheKey}`, e)
         }
       }
 

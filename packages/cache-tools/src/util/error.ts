@@ -1,7 +1,6 @@
 import VError from 'verror'
 
-export const toErrorStack = (e: Error): string =>
-  `${e.message}\n${VError.fullStack(e)}`
+export const toErrorStack = (e: Error): string => `${e.message}\n${VError.fullStack(e)}`
 
 export abstract class NPTError extends VError {
   protected constructor(name: string, message: string, cause?: Error) {
@@ -10,8 +9,9 @@ export abstract class NPTError extends VError {
         name,
         cause,
       },
-      message
+      message,
     )
+
     Error.captureStackTrace(this, this.constructor)
   }
 }

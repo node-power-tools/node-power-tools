@@ -1,38 +1,28 @@
 import { DateTimeFormatter, LocalDateTime } from '@js-joda/core'
+
 import { NptLogger } from './logger'
 
 /**
  * A very basic console logger
  */
 export class ConsoleLogger implements NptLogger {
-  static readonly DT_FORMAT = DateTimeFormatter.ofPattern(
-    'MM-dd-yy HH:mm:ss.SSS'
-  );
+  static readonly DT_FORMAT = DateTimeFormatter.ofPattern('MM-dd-yy HH:mm:ss.SSS')
 
   public static newInstance(): ConsoleLogger {
     return new ConsoleLogger()
   }
 
-  private handleLogMessage = (
-    level: string,
-    message: string,
-    ...metadata: any[]
-  ): ConsoleLogger => {
+  private handleLogMessage = (level: string, message: string, ...metadata: any[]): ConsoleLogger => {
     if (metadata) {
       console.log(
-        `${ConsoleLogger.DT_FORMAT.format(
-          LocalDateTime.now()
-        )}: ${level}: ${message}: ${JSON.stringify(metadata)}`
+        `${ConsoleLogger.DT_FORMAT.format(LocalDateTime.now())}: ${level}: ${message}: ${JSON.stringify(metadata)}`,
       )
     } else {
-      console.log(
-        `${ConsoleLogger.DT_FORMAT.format(
-          LocalDateTime.now()
-        )}: ${level}: ${message}`
-      )
+      console.log(`${ConsoleLogger.DT_FORMAT.format(LocalDateTime.now())}: ${level}: ${message}`)
     }
+
     return this
-  };
+  }
 
   all(msg: string, ...metadata: any[]): ConsoleLogger {
     return this.handleLogMessage('silly', msg, metadata)
