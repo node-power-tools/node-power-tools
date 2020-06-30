@@ -1113,6 +1113,26 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
+"@node-power-tools/concurrent-tools@file:packages/concurrent-tools":
+  version "0.0.1"
+  dependencies:
+    "@js-joda/core" "^2.0.0"
+    "@node-power-tools/logging-tools" "^0.0.1"
+    "@types/uuid" "^3.4.7"
+    "@types/verror" "^1.10.3"
+    reflect-metadata "^0.1.13"
+    uuid "^3.4.0"
+    verror "^1.10.0"
+  optionalDependencies:
+    handy-redis "^1.8.0"
+
+"@node-power-tools/logging-tools@file:packages/logging-tools":
+  version "0.0.1"
+  dependencies:
+    "@js-joda/core" "^2.0.0"
+  optionalDependencies:
+    winston "^3.2.1"
+
 "@nodelib/fs.stat@^1.1.2":
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
@@ -1975,8 +1995,8 @@ cache-base@^1.0.1:
   version "0.0.1"
   dependencies:
     "@js-joda/core" "^2.0.0"
-    "@node-power-tools/concurrent-tools" "^0.0.1"
-    "@node-power-tools/logging-tools" "^0.0.1"
+    "@node-power-tools/concurrent-tools" "file:../../../Library/Caches/Yarn/v6/npm-cache-tools-0.0.1-2ffa0bed-b14b-4966-bcd3-10c267e8eb75-1593544097840/node_modules/concurrent-tools"
+    "@node-power-tools/logging-tools" "file:../../../Library/Caches/Yarn/v6/npm-cache-tools-0.0.1-2ffa0bed-b14b-4966-bcd3-10c267e8eb75-1593544097840/node_modules/logging-tools"
     "@types/uuid" "^3.4.7"
     "@types/verror" "^1.10.3"
     reflect-metadata "^0.1.13"
@@ -5108,6 +5128,8 @@ logform@^2.1.1:
 
 "logging-tools@file:packages/logging-tools":
   version "0.0.1"
+  dependencies:
+    "@js-joda/core" "^2.0.0"
   optionalDependencies:
     winston "^3.2.1"
 
