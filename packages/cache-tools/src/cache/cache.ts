@@ -95,7 +95,7 @@ export interface CacheRequest {
  */
 export interface AsyncFunctionInvocation<T> {
   readFn: AsyncFunction<T>
-  args: any[]
+  args: never[]
 }
 
 /**
@@ -165,7 +165,7 @@ export interface Cache {
  * @param cache The cache object to use
  * @param cacheRequest The cache request
  */
-export function withReadThroughCache<FT extends (...args: any[]) => any>(
+export function withReadThroughCache<FT extends (...args: never[]) => never>(
   cache: Cache,
   cacheRequest: ReadThroughRequest<ReturnType<FT>>,
 ): (...funcArgs: Parameters<FT>) => Promise<ReturnType<FT>> {

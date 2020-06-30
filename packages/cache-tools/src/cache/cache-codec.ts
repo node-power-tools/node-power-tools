@@ -9,7 +9,7 @@ const KEY_REGEX = new RegExp(/^CACHE_.*::(.*)$/)
 
 export class CodecRegistry {
   private readonly codecByIdMap = new Map<string, CacheCodec>()
-  private readonly codecByClassMap = new Map<any, CacheCodec>()
+  private readonly codecByClassMap = new Map<unknown, CacheCodec>()
 
   /**
    * Register a cache codec

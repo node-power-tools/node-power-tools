@@ -26,7 +26,7 @@ export const KeyGenFunctions = {
   /**
    * Identity generation - use arg 0.
    */
-  [KeyGenStrategy.IDENTITY]: (keyGenArgs: any[], args: any[]): string => {
+  [KeyGenStrategy.IDENTITY]: (keyGenArgs: never[], args: never[]): string => {
     if (keyGenArgs.length != 1) {
       throw new CacheError('keyGenArgs must contain at least one argument index for strategy IDENTITY')
     }
@@ -37,7 +37,7 @@ export const KeyGenFunctions = {
   /**
    * Generate an md5 hash from all argument values.
    */
-  [KeyGenStrategy.HASH]: (_keyGenArgs: any[], args: any[]): string => {
+  [KeyGenStrategy.HASH]: (_keyGenArgs: never[], args: never[]): string => {
     if (args.length == 0) {
       return SCALAR_KEY
     }
@@ -51,7 +51,8 @@ export const KeyGenFunctions = {
   /**
    * Specify which argument indexes to pick and then join the values with '_'.
    */
-  [KeyGenStrategy.PICK]: (keyGenArgs: any[], args: any[]): string => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [KeyGenStrategy.PICK]: (keyGenArgs: any[], args: never[]): string => {
     if (keyGenArgs.length == 0) {
       throw new CacheError('keyGenArgs must contain at least one argument index for strategy PICK')
     }

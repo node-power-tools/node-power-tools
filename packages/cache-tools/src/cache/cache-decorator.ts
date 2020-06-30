@@ -6,7 +6,7 @@ import { CacheError } from './errors'
 
 export type KeyGeneratorFunction = (
   keyGenStrategy?: KeyGenStrategy,
-  keyGenArgs?: any[],
+  keyGenArgs?: never[],
   regionName?: string,
 ) => Function
 export type CacheConfigLookupFunction = (cacheName: string) => NonNullable<CacheConfig>
@@ -32,19 +32,19 @@ export function buildCacheDecorator(
    */
   return function(
     cacheKeyGenStrategy?: KeyGenStrategy,
-    keyGenArgs?: any[],
+    keyGenArgs?: never[],
     regionName?: string,
     cacheConfiguration?: PartialCacheConfig,
   ): Function {
     return function(
-      target: Record<string, any>,
+      target: Record<string, never>,
       methodName: string,
       propertyDesciptor: PropertyDescriptor,
     ): PropertyDescriptor {
       const parentClassName = target?.constructor.name || ''
       const originalFunction = propertyDesciptor.value
 
-      propertyDesciptor.value = async function(this: any, ...args: any[]) {
+      propertyDesciptor.value = async function(this: never, ...args: never[]) {
         // Default the region name to the method name if not defined
         const cacheRegionName = regionName || `${parentClassName}#${methodName}`
 

@@ -5,7 +5,7 @@ import { KeyGenStrategy, KeyGenFunctions } from '../../util'
 
 type LockDecoratorFunction = (
   cacheKeyGenStrategy: KeyGenStrategy,
-  keyGenArgs: any[],
+  keyGenArgs: never[],
   lockTtlSeconds: number,
 ) => Function
 
@@ -22,15 +22,15 @@ export function buildLockDecorator(lockFactory: LockFactory, logger: NptLogger):
    * @param lockKey The key to use when creating the lock
    * @param lockTtlSeconds The lock TTL
    */
-  return function(cacheKeyGenStrategy: KeyGenStrategy, keyGenArgs: any[], lockTtlSeconds: number) {
+  return function(cacheKeyGenStrategy: KeyGenStrategy, keyGenArgs: never[], lockTtlSeconds: number) {
     return function(
-      _target: Record<string, any>,
+      _target: Record<string, never>,
       methodName: string,
       propertyDesciptor: PropertyDescriptor,
     ): PropertyDescriptor {
       const originalFunction = propertyDesciptor.value
 
-      propertyDesciptor.value = async function(this: any, ...args: any[]) {
+      propertyDesciptor.value = async function(this: never, ...args: never[]) {
         // Generate the key
         const lockKey = KeyGenFunctions[cacheKeyGenStrategy || KeyGenStrategy.HASH](keyGenArgs || [], args)
 

@@ -61,7 +61,7 @@ export type LockConfig = {
  * @param lock The lock object to use
  * @param asyncFn The function to execute once the lock is successfully acquired
  */
-export const withLock = <FT extends (...args: any[]) => any>(
+export const withLock = <FT extends (...args: never[]) => never>(
   lock: Lock,
   asyncFn: FT,
 ): ((...funcArgs: Parameters<FT>) => Promise<ReturnType<FT>>) => {
@@ -79,10 +79,10 @@ export const withLock = <FT extends (...args: any[]) => any>(
       throw new LockError(`Error acquiring lock for key ${lock.getLockKey()}`, e)
     } finally {
       // Release the lock
-      lock.release()
+      await lock.release()
     }
 
     // Lock is not owned after a lock attempt, so don't do any work
-    throw new LockError(`Lock was not acquired for key ${lock.getLockKey()} so operation was not perfomed`)
+    throw new LockError(`Lock was not acquired for key ${lock.getLockKey()} so operation was not performed`)
   }
 }

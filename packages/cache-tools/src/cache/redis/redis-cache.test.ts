@@ -6,11 +6,13 @@ import { mock, mockClear } from 'jest-mock-extended'
 import { buildPromise } from '../../../../../test/promise-util'
 import { DEFAULT_CACHE_CONFIGURATION } from '../cache'
 import { buildRegionPrefixedCacheKey, SimpleJsonCodec } from '../cache-codec'
-import { DEFAULT_CACHE_REGION_NAME, RedisCacheImpl } from './redis-cache'
+import { DEFAULT_CACHE_REGION_NAME, RedisCacheImpl } from './RedisCache'
 
 const mockRedisClient = mock<IHandyRedis>()
 const mockRedisLockFactory = mock<LockFactory>()
 const mockLogger = mock<NptLogger>()
+
+const { mergeCacheConfigWithDefault: actualMergeCacheConfigWithDefault } = jest.requireActual('./redis-cache')
 
 describe('redis-cache tests', () => {
   const tested = new RedisCacheImpl(mockRedisClient, mockRedisLockFactory, mockLogger)
@@ -27,7 +29,7 @@ describe('redis-cache tests', () => {
     it('empty partial', async () => {
       const config = {}
 
-      const res = RedisCacheImpl.mergeCacheConfigWithDefault(config)
+      const res = actualMergeCacheConfigWithDefault(config)
 
       expect(res).toStrictEqual(DEFAULT_CACHE_CONFIGURATION)
     })
@@ -39,7 +41,7 @@ describe('redis-cache tests', () => {
         codecId: 'specialCodec',
       }
 
-      const res = RedisCacheImpl.mergeCacheConfigWithDefault(config)
+      const res = actualMergeCacheConfigWithDefault(config)
 
       expect(res.doubleCheckLockTtlSeconds).toStrictEqual(DEFAULT_CACHE_CONFIGURATION.doubleCheckLockTtlSeconds)
       expect(res.ttlSeconds).toStrictEqual(config.ttlSeconds)
@@ -92,6 +94,7 @@ describe('redis-cache tests', () => {
 
       try {
         await tested.get(key, region)
+        // eslint-disable-next-line jest/no-jasmine-globals
         fail('Should not get here')
       } catch (e) {
         // eslint-disable-next-line jest/no-try-expect
