@@ -1,3 +1,7 @@
+const nodePowerTools = '@node-power-tools'
+const prefix = (module) => `${nodePowerTools}/${module}`
+const nptModules = [`cache-tools`, `logging-tools`, `concurrent-tools`].map(prefix).join('|')
+
 module.exports = {
   testEnvironment: 'node',
   setupFilesAfterEnv: ['<rootDir>/test/testSetup.js'],
@@ -6,6 +10,7 @@ module.exports = {
   transform: {
     '^.+\\.tsx?$': 'ts-jest',
   },
+  transformIgnorePatterns: [`/node_modules/(?!${nptModules})`],
   globals: {
     'ts-jest': {
       diagnostics: {
