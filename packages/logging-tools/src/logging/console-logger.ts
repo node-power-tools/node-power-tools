@@ -5,7 +5,7 @@ import { NptLogger } from './logger'
 /**
  * A very basic console logger
  */
-export class ConsoleLogger implements NptLogger<ConsoleLogger> {
+export class ConsoleLogger implements NptLogger {
   private constructor(private readonly dateTimeFormatter: DateTimeFormatter) {}
 
   /**

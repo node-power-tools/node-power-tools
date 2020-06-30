@@ -5,7 +5,7 @@ import { NptLogger } from './logger'
 /**
  * A Winston logger wrapper
  */
-export class WinstonLogger implements NptLogger<WinstonLogger> {
+export class WinstonLogger implements NptLogger {
   private constructor(private readonly wrapped: Logger) {}
 
   public static wrap(logger: Logger): WinstonLogger {
