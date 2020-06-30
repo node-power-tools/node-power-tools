@@ -98,7 +98,7 @@ module.exports = {
   ignorePatterns: ['build', 'node_modules'],
   overrides: [
     {
-      files: ['*.test.*'],
+      files: ['*.test.*', '*.js'],
       rules: {
         '@typescript-eslint/explicit-function-return-type': ['off'],
       },
