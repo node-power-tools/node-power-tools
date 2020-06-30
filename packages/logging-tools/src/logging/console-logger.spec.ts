@@ -17,7 +17,8 @@ const verifyLogged = (level: string, message = 'some message', ...metadata: unkn
 
   const search = match.map(createLookAround).join('')
   const regex = new RegExp(`${prefix}${search}${suffix}`)
-  expect(wrapped.log.mock.calls[0][0]).toMatch(regex)
+  const calls = wrapped.log.mock.calls[0]
+  expect(calls[0]).toMatch(regex)
 }
 
 describe('ConsoleLogger tests', () => {
@@ -29,68 +30,74 @@ describe('ConsoleLogger tests', () => {
   const someMessage = 'some message'
   const metadata = { white: 'rabbit' }
 
-  it('should log debug', () => {
+  it('should log with console debug', () => {
     consoleLogger.debug(someMessage)
     expect(wrapped.log).toBeCalled()
     verifyLogged('debug', someMessage)
   })
 
-  it('should log debug with metadata', () => {
-    consoleLogger.debug(someMessage)
+  it('should log with console debug with metadata', () => {
+    consoleLogger.debug(someMessage, metadata)
     expect(wrapped.log).toBeCalled()
     verifyLogged('debug', someMessage, metadata)
   })
 
-  it('should log error', () => {
+  it('should log with console error', () => {
     consoleLogger.error(someMessage)
     expect(wrapped.log).toBeCalled()
     verifyLogged('error', someMessage)
   })
 
-  it('should log error with metadata', () => {
-    consoleLogger.error(someMessage)
+  it('should log with console error with metadata', () => {
+    consoleLogger.error(someMessage, metadata)
     expect(wrapped.log).toBeCalled()
     verifyLogged('error', someMessage, metadata)
   })
 
-  it('should log info', () => {
+  it('should log with console info', () => {
     consoleLogger.info(someMessage)
     expect(wrapped.log).toBeCalled()
     verifyLogged('info', someMessage)
   })
 
-  it('should log info with metadata', () => {
-    consoleLogger.info(someMessage)
+  it('should log with console info with metadata', () => {
+    consoleLogger.info(someMessage, metadata)
     expect(wrapped.log).toBeCalled()
     verifyLogged('info', someMessage, metadata)
   })
 
-  it('should log trace', () => {
+  it('should log with console trace', () => {
     consoleLogger.trace(someMessage)
     expect(wrapped.log).toBeCalled()
     verifyLogged('trace', someMessage)
   })
 
-  it('should log warn', () => {
+  it('should log with console trace with metadata', () => {
+    consoleLogger.trace(someMessage, metadata)
+    expect(wrapped.log).toBeCalled()
+    verifyLogged('trace', someMessage)
+  })
+
+  it('should log with console warn', () => {
     consoleLogger.warn(someMessage)
     expect(wrapped.log).toBeCalled()
     verifyLogged('warn', someMessage)
   })
 
-  it('should log warn with metadata', () => {
-    consoleLogger.warn(someMessage)
+  it('should log with console warn with metadata', () => {
+    consoleLogger.warn(someMessage, metadata)
     expect(wrapped.log).toBeCalled()
     verifyLogged('warn', someMessage, metadata)
   })
 
-  it('should log all', () => {
+  it('should log with console all', () => {
     consoleLogger.all(someMessage)
     expect(wrapped.log).toBeCalled()
     verifyLogged('silly', someMessage)
   })
 
-  it('should log all with metadata', () => {
-    consoleLogger.all(someMessage)
+  it('should log with console all with metadata', () => {
+    consoleLogger.all(someMessage, metadata)
     expect(wrapped.log).toBeCalled()
     verifyLogged('silly', someMessage, metadata)
   })
