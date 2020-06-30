@@ -1,5 +1,5 @@
-import { RedisLockFactory, withLock } from '@node-power-tools/concurrent-tools/dist'
-import { NptLogger } from '@node-power-tools/logging-tools/src'
+import { RedisLockFactory, withLock } from '@node-power-tools/concurrent-tools'
+import { NptLogger } from '@node-power-tools/logging-tools'
 import { IHandyRedis } from 'handy-redis'
 
 import { Optional, toErrorStack } from '../../util'

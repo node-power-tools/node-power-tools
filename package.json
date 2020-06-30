@@ -9,6 +9,7 @@
     "pretest": "eslint packages",
     "format": "lerna run format",
     "test": "lerna run test",
+    "local-test": "run-p --print-label format test",
     "clean": "lerna run clean",
     "build": "lerna run build",
     "fix:eslint": "lerna run fix:eslint",
