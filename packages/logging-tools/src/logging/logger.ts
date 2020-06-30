@@ -1,18 +1,18 @@
 /**
  * Simple logging function
  */
-export interface NptLogFunctions<T extends NptLogger> {
-  (msg: string, ...metadata: any[]): T
+export interface NptLogFunctions<T extends NptLogger<T>> {
+  (msg: string, ...metadata: unknown[]): T
 }
 
 /**
  * Logger wrapper interface
  */
-export interface NptLogger {
-  all: NptLogFunctions<any>
-  debug: NptLogFunctions<any>
-  error: NptLogFunctions<any>
-  info: NptLogFunctions<any>
-  trace: NptLogFunctions<any>
-  warn: NptLogFunctions<any>
+export interface NptLogger<T extends NptLogger<T>> {
+  all: NptLogFunctions<T>
+  debug: NptLogFunctions<T>
+  error: NptLogFunctions<T>
+  info: NptLogFunctions<T>
+  trace: NptLogFunctions<T>
+  warn: NptLogFunctions<T>
 }
