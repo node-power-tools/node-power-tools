@@ -1,47 +1,4 @@
 {
   "name": "@node-power-tools/logging-tools",
-  "version": "0.0.1",
-  "description": "Logging tools for NodeJS",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/bsantare/node-power-tools.git"
-  },
-  "author": "James Dunnam <7660553+jimador@users.noreply.github.com>",
-  "homepage": "https://github.com/bsantare/node-power-tools",
-  "license": "MIT",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "files": [
-    "/dist"
-  ],
-  "publishConfig": {
-    "access": "public"
-  },
-  "scripts": {
-    "build": "tsc",
-    "build:check": "tsc --noEmit",
-    "clean": "rimraf dist/*",
-    "fix:eslint": "eslint --fix \"src/**/*.{ts,js}\"",
-    "format": "prettier --write --config .prettierrc.yaml \"./**/*\"",
-    "publish": "yarn publish",
-    "sort:packages": "npx sort-package-json",
-    "test": "run-p --print-label test:ts test:format test:lint test:unit",
-    "test:format": "prettier --check --config .prettierrc.yaml \"./**/*\"",
-    "test:lint": "eslint . --cache --ext js,ts",
-    "test:ts": "tsc -p tsconfig.json",
-    "test:unit": "jest"
-  },
-  "prettier": {
-    "singleQuote": true,
-    "printWidth": 120
-  },
-  "dependencies": {
-    "@js-joda/core": "^2.0.0"
-  },
-  "optionalDependencies": {
-    "winston": "^3.2.1"
-  },
-  "bugs": {
-    "url": "https://github.com/bsantare/node-power-tools/issues"
-  }
+  "version": "0.0.1"
 }

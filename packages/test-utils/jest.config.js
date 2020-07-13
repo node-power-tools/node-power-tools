@@ -1,9 +1,9 @@
 module.exports = {
-  name: 'concurrent-tools',
+  name: 'test-utils',
   preset: '../../jest.config.js',
   transform: {
     '^.+\\.[tj]sx?$': 'ts-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'html'],
-  coverageDirectory: '../../coverage/packages/concurrent-tools',
+  coverageDirectory: '../../coverage/packages/test-utils',
 };

@@ -1,11 +1,7 @@
-# `logging-tools`
+# logging-tools
 
-> TODO: description
+This library was generated with [Nx](https://nx.dev).
 
-## Usage
+## Running unit tests
 
-```
-const loggingTools = require('logging-tools');
-
-// TODO: DEMONSTRATE API
-```
+Run `ng test logging-tools` to execute the unit tests via [Jest](https://jestjs.io).

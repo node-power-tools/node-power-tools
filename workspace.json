@@ -1,0 +1,205 @@
+{
+  "version": 1,
+  "projects": {
+    "concurrent-tools": {
+      "root": "packages/concurrent-tools",
+      "sourceRoot": "packages/concurrent-tools/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:lint",
+          "options": {
+            "linter": "eslint",
+            "tsConfig": [
+              "packages/concurrent-tools/tsconfig.lib.json",
+              "packages/concurrent-tools/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!packages/concurrent-tools/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "packages/concurrent-tools/jest.config.js",
+            "tsConfig": "packages/concurrent-tools/tsconfig.spec.json",
+            "passWithNoTests": true
+          }
+        },
+        "build": {
+          "builder": "@nrwl/node:package",
+          "options": {
+            "outputPath": "dist/packages/concurrent-tools",
+            "tsConfig": "packages/concurrent-tools/tsconfig.lib.json",
+            "packageJson": "packages/concurrent-tools/package.json",
+            "main": "packages/concurrent-tools/src/index.ts",
+            "assets": ["packages/concurrent-tools/*.md"]
+          }
+        }
+      }
+    },
+    "cache-tools": {
+      "root": "packages/cache-tools",
+      "sourceRoot": "packages/cache-tools/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:lint",
+          "options": {
+            "linter": "eslint",
+            "tsConfig": [
+              "packages/cache-tools/tsconfig.lib.json",
+              "packages/cache-tools/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!packages/cache-tools/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "packages/cache-tools/jest.config.js",
+            "tsConfig": "packages/cache-tools/tsconfig.spec.json",
+            "passWithNoTests": true
+          }
+        },
+        "build": {
+          "builder": "@nrwl/node:package",
+          "options": {
+            "outputPath": "dist/packages/cache-tools",
+            "tsConfig": "packages/cache-tools/tsconfig.lib.json",
+            "packageJson": "packages/cache-tools/package.json",
+            "main": "packages/cache-tools/src/index.ts",
+            "assets": ["packages/cache-tools/*.md"]
+          }
+        }
+      }
+    },
+    "logging-tools": {
+      "root": "packages/logging-tools",
+      "sourceRoot": "packages/logging-tools/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:lint",
+          "options": {
+            "linter": "eslint",
+            "tsConfig": [
+              "packages/logging-tools/tsconfig.lib.json",
+              "packages/logging-tools/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!packages/logging-tools/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "packages/logging-tools/jest.config.js",
+            "tsConfig": "packages/logging-tools/tsconfig.spec.json",
+            "passWithNoTests": true
+          }
+        },
+        "build": {
+          "builder": "@nrwl/node:package",
+          "options": {
+            "outputPath": "dist/packages/logging-tools",
+            "tsConfig": "packages/logging-tools/tsconfig.lib.json",
+            "packageJson": "packages/logging-tools/package.json",
+            "main": "packages/logging-tools/src/index.ts",
+            "assets": ["packages/logging-tools/*.md"]
+          }
+        }
+      }
+    },
+    "test-utils": {
+      "root": "packages/test-utils",
+      "sourceRoot": "packages/test-utils/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:lint",
+          "options": {
+            "linter": "eslint",
+            "tsConfig": [
+              "packages/test-utils/tsconfig.lib.json",
+              "packages/test-utils/tsconfig.spec.json"
+            ],
+            "exclude": ["**/node_modules/**", "!packages/test-utils/**/*"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "packages/test-utils/jest.config.js",
+            "tsConfig": "packages/test-utils/tsconfig.spec.json",
+            "passWithNoTests": true
+          }
+        }
+      }
+    }
+  },
+  "cli": {
+    "defaultCollection": "@nrwl/workspace"
+  },
+  "schematics": {
+    "@nrwl/workspace": {
+      "library": {
+        "linter": "eslint"
+      }
+    },
+    "@nrwl/cypress": {
+      "cypress-project": {
+        "linter": "eslint"
+      }
+    },
+    "@nrwl/react": {
+      "application": {
+        "linter": "eslint"
+      },
+      "library": {
+        "linter": "eslint"
+      },
+      "storybook-configuration": {
+        "linter": "eslint"
+      }
+    },
+    "@nrwl/next": {
+      "application": {
+        "linter": "eslint"
+      }
+    },
+    "@nrwl/web": {
+      "application": {
+        "linter": "eslint"
+      }
+    },
+    "@nrwl/node": {
+      "application": {
+        "linter": "eslint"
+      },
+      "library": {
+        "linter": "eslint"
+      }
+    },
+    "@nrwl/nx-plugin": {
+      "plugin": {
+        "linter": "eslint"
+      }
+    },
+    "@nrwl/nest": {
+      "application": {
+        "linter": "eslint"
+      }
+    },
+    "@nrwl/express": {
+      "application": {
+        "linter": "eslint"
+      },
+      "library": {
+        "linter": "eslint"
+      }
+    }
+  }
+}

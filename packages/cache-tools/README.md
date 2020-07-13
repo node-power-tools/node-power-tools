@@ -1,11 +1,7 @@
-# `cache-tools`
+# cache-tools
 
-> TODO: description
+This library was generated with [Nx](https://nx.dev).
 
-## Usage
+## Running unit tests
 
-```
-const cacheTools = require('cache-tools');
-
-// TODO: DEMONSTRATE API
-```
+Run `ng test cache-tools` to execute the unit tests via [Jest](https://jestjs.io).
