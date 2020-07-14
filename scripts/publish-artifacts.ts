@@ -17,9 +17,6 @@ export const deployArtifact = (name: string, type: VersioningType): string => {
 
   console.log(`Updating ${name}: to version ${newVersion}`)
 
-  console.log(`Building...`)
-  cp.execSync(`yarn build ${name}`)
-
   console.log('Tarring and feathering...')
   const tarFileName = `${name}.tar.gz`
   cp.execSync(`(cd ${BUILD_DIR}/${name} && tar -cvzf ../../../${tarFileName} ./)`)
