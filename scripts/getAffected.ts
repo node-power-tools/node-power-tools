@@ -13,7 +13,7 @@ export type VersioningType = typeof versioningTypes[number]
  * @returns {Array<string>} Affected libraries
  */
 const affectedLibs = (): string[] => {
-  const result = execSync(`yarn affected:libs -- --base=remotes/origin/master~1`).toString()
+  const result = execSync(`npm run affected:libs --base=remotes/origin/master~1`).toString()
   const data = result.match(/- (.+)/gm)
   return data
     ? data.map((lib) => {
