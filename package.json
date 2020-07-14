@@ -1,62 +1,88 @@
 {
-  "name": "root",
-  "private": true,
-  "workspaces": [
-    "packages/*"
+  "name": "node-power-tools",
+  "version": "0.0.2",
+  "license": "MIT",
+  "keywords": [
+    "redis",
+    "concurrency",
+    "locking",
+    "lock",
+    "mutex"
   ],
   "scripts": {
-    "bootstrap": "lerna bootstrap",
-    "pretest": "eslint packages",
-    "format": "lerna run format",
-    "test": "lerna run test",
-    "clean": "lerna run clean",
-    "build": "lerna run build",
-    "fix:eslint": "lerna run fix:eslint",
-    "publish:lerna": "lerna publish -y --canary --preid alpha --dist-tag=alpha",
-    "update-version": "lerna publish --skip-git --skip-npm --force-publish '*'",
-    "check-packages": "yarn clean && yarn compile && yarn test && yarn lint",
-    "publish:alpha": "lerna publish -y --canary --preid alpha --npm-tag=alpha --force-publish=*",
-    "publish:minor": "lerna publish -y --canary minor --preid alpha --npm-tag=alpha --force-publish=*"
+    "nx": "nx",
+    "start": "nx serve",
+    "build": "nx build",
+    "test": "nx test",
+    "lint": "nx workspace-lint && nx lint",
+    "lint:all": "nx run-many --target=lint --all",
+    "e2e": "nx e2e",
+    "affected:apps": "nx affected:apps",
+    "affected:libs": "nx affected:libs",
+    "affected:build": "nx affected:build",
+    "affected:e2e": "nx affected:e2e",
+    "affected:test": "nx affected:test",
+    "affected:lint": "nx affected:lint",
+    "affected:dep-graph": "nx affected:dep-graph",
+    "affected": "nx affected",
+    "format": "nx format:write",
+    "format:write": "nx format:write",
+    "format:check": "nx format:check",
+    "update": "nx migrate latest",
+    "workspace-schematic": "nx workspace-schematic",
+    "dep-graph": "nx dep-graph",
+    "help": "nx help",
+    "prepush": "run-s affected:lint affected:test"
+  },
+  "private": true,
+  "dependencies": {
+    "@js-joda/core": "^3.0.0",
+    "reflect-metadata": "^0.1.13",
+    "uuid": "^8.2.0",
+    "verror": "^1.10.0"
   },
   "devDependencies": {
-    "@lerna/bootstrap": "^3.20.0",
-    "@types/jest": "^24.9.1",
-    "@typescript-eslint/eslint-plugin": "^2.13.0",
-    "@typescript-eslint/parser": "^2.13.0",
-    "eslint": "^6.8.0",
-    "eslint-config-defaults": "9.0.0",
-    "eslint-config-prettier": "6.11.0",
-    "eslint-plugin-import": "2.22.0",
-    "eslint-plugin-jest": "23.17.1",
-    "eslint-plugin-prettier": "3.1.4",
-    "eslint-plugin-unused-imports": "0.1.3",
-    "npm-run-all": "4.1.5",
-    "husky": "^4.2.3",
-    "jest": "^25.1.0",
-    "jest-mock-extended": "^1.0.8",
-    "lerna": "^3.20.2",
-    "lint-staged": "^10.0.7",
-    "npm-ci": "^0.0.2",
-    "prettier": "^1.19.1",
-    "rimraf": "^3.0.0",
-    "ts-jest": "^25.2.0",
-    "ts-node": "^8.6.2",
-    "typescript": "^3.8.2",
-    "yarn": "^1.22.0"
+    "@nrwl/eslint-plugin-nx": "9.5.1",
+    "@nrwl/jest": "9.5.1",
+    "@nrwl/lint": "^8.4.0-beta.4",
+    "@nrwl/node": "^9.5.1",
+    "@nrwl/workspace": "9.5.1",
+    "@types/jest": "25.1.4",
+    "@types/node": "~8.9.4",
+    "@types/uuid": "^8.0.0",
+    "@types/verror": "^1.10.4",
+    "@typescript-eslint/eslint-plugin": "2.19.2",
+    "@typescript-eslint/parser": "2.19.2",
+    "dotenv": "6.2.0",
+    "eslint": "6.8.0",
+    "eslint-config-prettier": "6.0.0",
+    "eslint-plugin-jest": "^23.18.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "husky": "^4.2.5",
+    "jest": "25.2.3",
+    "jest-mock-extended": "^1.0.9",
+    "lint-staged": "^10.2.11",
+    "npm-run-all": "^4.1.5",
+    "prettier": "2.0.4",
+    "ts-jest": "25.2.1",
+    "ts-node": "~7.0.0",
+    "tslint": "~6.0.0",
+    "typescript": "~3.8.3"
   },
-  "dependencies": {
-    "cache-tools": "file:packages/cache-tools",
-    "concurrent-tools": "file:packages/concurrent-tools",
-    "logging-tools": "file:packages/logging-tools"
+  "optionalDependencies": {
+    "handy-redis": "^1.8.3",
+    "winston": "^3.3.3"
   },
-  "version": "0.0.1-alpha.14",
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "lint-staged",
+      "pre-push": "yarn prepush"
     }
   },
   "lint-staged": {
-    "*.{ts,js}": "eslint --fix",
-    "*.{ts,js,md,yaml,yml,json}": "prettier --write --config .prettierrc.yaml"
+    "*.{ts,js,md,yaml,yml,json}": "yarn format"
+  },
+  "author": {
+    "name": "Brian Santarelli"
   }
 }

@@ -1,11 +1,5 @@
-# `cache-tools`
+# cache-tools
 
-> TODO: description
+## Running unit tests
 
-## Usage
-
-```
-const cacheTools = require('cache-tools');
-
-// TODO: DEMONSTRATE API
-```
+Run `yarn nx test cache-tools` to execute the unit tests via [Jest](https://jestjs.io).

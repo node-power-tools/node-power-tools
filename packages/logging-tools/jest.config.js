@@ -1,17 +1,9 @@
 module.exports = {
-  testEnvironment: 'node',
-  setupFilesAfterEnv: ['<rootDir>/test/testSetup.js'],
-  setupFiles: ['<rootDir>/test/setup.js'],
-  testPathIgnorePatterns: ['<rootDir>/node_modules/', '<rootDir>/dist/'],
+  name: 'logging-tools',
+  preset: '../../jest.config.js',
   transform: {
-    '^.+\\.tsx?$': 'ts-jest',
+    '^.+\\.[tj]sx?$': 'ts-jest',
   },
-  globals: {
-    'ts-jest': {
-      diagnostics: {
-        warnOnly: true,
-      },
-    },
-  },
-  preset: 'ts-jest',
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'html'],
+  coverageDirectory: '../../coverage/packages/logging-tools',
 }

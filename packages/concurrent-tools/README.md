@@ -1,11 +1,5 @@
-# `concurrent-tools`
+# concurrent-tools
 
-> TODO: description
+## Running unit tests
 
-## Usage
-
-```
-const concurrentTools = require('concurrent-tools');
-
-// TODO: DEMONSTRATE API
-```
+Run `yarn nx test concurrent-tools` to execute the unit tests via [Jest](https://jestjs.io).

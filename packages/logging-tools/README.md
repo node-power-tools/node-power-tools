@@ -1,11 +1,5 @@
-# `logging-tools`
+# logging-tools
 
-> TODO: description
+## Running unit tests
 
-## Usage
-
-```
-const loggingTools = require('logging-tools');
-
-// TODO: DEMONSTRATE API
-```
+Run `yarn nx test logging-tools` to execute the unit tests via [Jest](https://jestjs.io).
