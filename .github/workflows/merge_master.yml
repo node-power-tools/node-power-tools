@@ -12,12 +12,10 @@ jobs:
     steps:
       - name: Begin CI...
         uses: actions/checkout@v2
-
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-
       - name: Use cached node_modules
         uses: actions/cache@v1
         with:
@@ -25,35 +23,23 @@ jobs:
           key: nodeModules-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             nodeModules-
-
       - name: Install dependencies
         run: yarn install --frozen-lockfile
         env:
           CI: true
-
       - name: Lint
         run: yarn nx run-many --target=lint --all
         env:
           CI: true
-
       - name: Test
         run: yarn nx run-many --target=test --all --ci --coverage --maxWorkers=2
         env:
           CI: true
-
       - name: Build
         run: yarn nx run-many --target=build --all
         env:
           CI: true
-
-  publish:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [12.x]
-
-    steps:
-      - name: Dump GitHub context
+      - name: Print GitHub context
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo "$GITHUB_CONTEXT"
