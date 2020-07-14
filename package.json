@@ -61,5 +61,14 @@
   "optionalDependencies": {
     "handy-redis": "^1.8.3",
     "winston": "^3.3.3"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged && yarn nx run-many --target=lint --all && yarn nx affected --target=test"
+    }
+  },
+  "lint-staged": {
+    "*.{ts,js}": "eslint --fix",
+    "*.{ts,js,md,yaml,yml,json}": "prettier --write --config .prettierrc.yml"
   }
 }
