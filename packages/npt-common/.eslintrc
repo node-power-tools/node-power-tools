@@ -1,9 +1,7 @@
 {
   "extends": "../../.eslintrc",
   "rules": {},
-  "ignorePatterns": [
-    "!**/*"
-  ],
+  "ignorePatterns": ["!**/*"],
   "env": {
     "node": true
   }

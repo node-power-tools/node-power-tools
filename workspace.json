@@ -11,10 +11,7 @@
           "builder": "@nrwl/linter:lint",
           "options": {
             "linter": "eslint",
-            "tsConfig": [
-              "packages/concurrent-tools/tsconfig.lib.json",
-              "packages/concurrent-tools/tsconfig.spec.json"
-            ],
+            "tsConfig": ["packages/concurrent-tools/tsconfig.lib.json", "packages/concurrent-tools/tsconfig.spec.json"],
             "exclude": ["**/node_modules/**", "!packages/concurrent-tools/**/*"]
           }
         },
@@ -48,10 +45,7 @@
           "builder": "@nrwl/linter:lint",
           "options": {
             "linter": "eslint",
-            "tsConfig": [
-              "packages/cache-tools/tsconfig.lib.json",
-              "packages/cache-tools/tsconfig.spec.json"
-            ],
+            "tsConfig": ["packages/cache-tools/tsconfig.lib.json", "packages/cache-tools/tsconfig.spec.json"],
             "exclude": ["**/node_modules/**", "!packages/cache-tools/**/*"]
           }
         },
@@ -85,10 +79,7 @@
           "builder": "@nrwl/linter:lint",
           "options": {
             "linter": "eslint",
-            "tsConfig": [
-              "packages/logging-tools/tsconfig.lib.json",
-              "packages/logging-tools/tsconfig.spec.json"
-            ],
+            "tsConfig": ["packages/logging-tools/tsconfig.lib.json", "packages/logging-tools/tsconfig.spec.json"],
             "exclude": ["**/node_modules/**", "!packages/logging-tools/**/*"]
           }
         },
@@ -122,10 +113,7 @@
           "builder": "@nrwl/linter:lint",
           "options": {
             "linter": "eslint",
-            "tsConfig": [
-              "packages/test-utils/tsconfig.lib.json",
-              "packages/test-utils/tsconfig.spec.json"
-            ],
+            "tsConfig": ["packages/test-utils/tsconfig.lib.json", "packages/test-utils/tsconfig.spec.json"],
             "exclude": ["**/node_modules/**", "!packages/test-utils/**/*"]
           }
         },
@@ -159,10 +147,7 @@
           "builder": "@nrwl/linter:lint",
           "options": {
             "linter": "eslint",
-            "tsConfig": [
-              "packages/npt-common/tsconfig.lib.json",
-              "packages/npt-common/tsconfig.spec.json"
-            ],
+            "tsConfig": ["packages/npt-common/tsconfig.lib.json", "packages/npt-common/tsconfig.spec.json"],
             "exclude": ["**/node_modules/**", "!packages/npt-common/**/*"]
           }
         },

@@ -1,4 +1,4 @@
-#name: Publish with Lerna
+#name: Publish
 #
 #on:
 #  push:
@@ -36,7 +36,7 @@
 #        env:
 #          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 #
-#      - name: Publish with Lerna
+#      - name: Publish
 #        run: yarn publish:alpha
 #        env:
 #          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

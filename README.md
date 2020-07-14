@@ -1,5 +1,7 @@
 # Node Power Tools
+
 ---
+
 <pre>
       __   __   ___     __   __        ___  __     ___  __   __        __  
 |\ | /  \ |  \ |__     |__) /  \ |  | |__  |__)     |  /  \ /  \ |    /__`
@@ -25,7 +27,8 @@
                                       `╙▀▀▀▀▒▒▓▓▓▀▀
 </pre>
 
-Tools to make your life as a NodeJS developer a little better. 
+Tools to make your life as a NodeJS developer a little better.
+
 ## Useful commands
 
 > Note: If you have _Nx_ installed globally, you can omit _yarn_ from the following commands.

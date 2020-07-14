@@ -1,2 +1,2 @@
-export * from './typings';
-export * from './util';
+export * from './typings'
+export * from './util'

@@ -16,13 +16,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@node-power-tools/concurrent-tools": [
-        "packages/concurrent-tools/src/index.ts"
-      ],
+      "@node-power-tools/concurrent-tools": ["packages/concurrent-tools/src/index.ts"],
       "@node-power-tools/cache-tools": ["packages/cache-tools/src/index.ts"],
-      "@node-power-tools/logging-tools": [
-        "packages/logging-tools/src/index.ts"
-      ],
+      "@node-power-tools/logging-tools": ["packages/logging-tools/src/index.ts"],
       "@node-power-tools/test-utils": ["packages/test-utils/src/index.ts"],
       "@node-power-tools/npt-common": ["packages/npt-common/src/index.ts"]
     }

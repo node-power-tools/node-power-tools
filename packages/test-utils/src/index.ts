@@ -1,1 +1,1 @@
-export * from './lib/promise-util';
+export * from './lib/promise-util'

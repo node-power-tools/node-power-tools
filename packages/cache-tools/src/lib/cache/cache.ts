@@ -1,10 +1,6 @@
-import { SimpleJsonCodec } from './cache-codec';
-import { NptLogger } from '@node-power-tools/logging-tools';
-import {
-  AsyncFunction,
-  Optional,
-  CacheError,
-} from '@node-power-tools/npt-common';
+import { SimpleJsonCodec } from './cache-codec'
+import { NptLogger } from '@node-power-tools/logging-tools'
+import { AsyncFunction, Optional, CacheError } from '@node-power-tools/npt-common'
 
 /**
  * Cache configuration for a cache request.
@@ -13,20 +9,20 @@ export interface CacheConfig {
   /**
    * TTL in seconds for the data if a put operation is necessary
    */
-  ttlSeconds: number;
+  ttlSeconds: number
   /**
    * True if the underlying caching mechanism should utilize double checked locking to avoid cache stampeding.  This
    * flag is relevant for long running or expensive fetchFn operations.
    */
-  doubleCheckedPut: boolean;
+  doubleCheckedPut: boolean
   /**
    * Seconds that the underlying locking mechanism should utilize for the lock TTL when performing double-checked puts
    */
-  doubleCheckLockTtlSeconds: number;
+  doubleCheckLockTtlSeconds: number
   /**
    * Codec id for serialization/deserialization of cached values in the underlying cache
    */
-  codecId: string;
+  codecId: string
 }
 
 /**
@@ -34,7 +30,7 @@ export interface CacheConfig {
  */
 export type PartialCacheConfig =
   | NonNullable<Pick<CacheConfig, 'ttlSeconds' | 'doubleCheckedPut'>>
-  | Pick<CacheConfig, 'doubleCheckLockTtlSeconds' | 'codecId'>;
+  | Pick<CacheConfig, 'doubleCheckLockTtlSeconds' | 'codecId'>
 
 /**
  * A default cache configuration
@@ -44,14 +40,14 @@ export const DEFAULT_CACHE_CONFIGURATION: CacheConfig = {
   doubleCheckedPut: false,
   doubleCheckLockTtlSeconds: 30,
   codecId: SimpleJsonCodec.ID,
-};
+}
 
 /**
  * A cache configurations collection indexed by cache region name
  */
 export type CacheConfigurations = {
-  [key: string]: PartialCacheConfig;
-};
+  [key: string]: PartialCacheConfig
+}
 
 /**
  * Factory to build a {@link CacheConfigurations} object
@@ -59,22 +55,20 @@ export type CacheConfigurations = {
 export const buildCacheConfigurations = (
   cacheConfigurations: CacheConfigurations,
   defaultConfig: CacheConfig,
-  logger: NptLogger
+  logger: NptLogger,
 ) => (cacheName: string): CacheConfig => {
-  const config = cacheConfigurations[cacheName] || {};
+  const config = cacheConfigurations[cacheName] || {}
 
   if (!config) {
-    logger.warn(
-      `No cache configuration found for cache name ${cacheName} - defaulting configuration`
-    );
+    logger.warn(`No cache configuration found for cache name ${cacheName} - defaulting configuration`)
   }
 
   // Provide a default configuration for non-configured caches
   return {
     ...defaultConfig,
     ...config,
-  };
-};
+  }
+}
 
 /**
  * A caching request
@@ -83,37 +77,37 @@ export interface CacheRequest {
   /**
    *  Optional cache region name - will be defaulted if not included
    */
-  cacheRegion?: string;
+  cacheRegion?: string
   /**
    * The cache key to use
    */
-  cacheKey: string;
+  cacheKey: string
   /**
    * Cache configuration to use for the request
    */
-  cacheConfig?: Partial<CacheConfig>;
+  cacheConfig?: Partial<CacheConfig>
 }
 
 /**
  * An async function invocation
  */
 export interface AsyncFunctionInvocation<T> {
-  readFn: AsyncFunction<T>;
-  args: any[];
+  readFn: AsyncFunction<T>
+  args: any[]
 }
 
 /**
  * A read through request
  */
 export interface ReadThroughRequest<T> extends CacheRequest {
-  fnInvocation: AsyncFunctionInvocation<T>;
+  fnInvocation: AsyncFunctionInvocation<T>
 }
 
 /**
  * A put request
  */
 export interface PutRequest<T> extends CacheRequest {
-  value: T;
+  value: T
 }
 
 /**
@@ -128,14 +122,14 @@ export interface Cache {
    *        if not provided
    * @return The cached value
    */
-  get<T>(cacheKey: string, cacheRegion?: string): Promise<Optional<T>>;
+  get<T>(cacheKey: string, cacheRegion?: string): Promise<Optional<T>>
 
   /**
    * Put a value into the cache
    *
    * @param putRequest The put request
    */
-  put<T>(putRequest: PutRequest<T>): Promise<void>;
+  put<T>(putRequest: PutRequest<T>): Promise<void>
 
   /**
    * Read through a cache
@@ -143,7 +137,7 @@ export interface Cache {
    * @param readThroughRequest A read through request
    * @return The value returned from the cache or calculated via {@link ReadThroughRequest#readFn}
    */
-  readThrough<T>(readThroughRequest: ReadThroughRequest<T>): Promise<T>;
+  readThrough<T>(readThroughRequest: ReadThroughRequest<T>): Promise<T>
 
   /**
    * Invalidate a cache region.
@@ -151,7 +145,7 @@ export interface Cache {
    * @param cacheRegionName The cache region to invalidate
    * @return true if invalidated, false otherwise
    */
-  invalidateCacheRegion(cacheRegionName: string): Promise<boolean>;
+  invalidateCacheRegion(cacheRegionName: string): Promise<boolean>
 
   /**
    * Invalidate a cache key.
@@ -160,10 +154,7 @@ export interface Cache {
    * @param cacheKey The cache key to invalidate
    * @return true if invalidated, false otherwise
    */
-  invalidateCacheKey(
-    cacheRegionName: string,
-    cacheKey: string
-  ): Promise<boolean>;
+  invalidateCacheKey(cacheRegionName: string, cacheKey: string): Promise<boolean>
 }
 
 /**
@@ -174,16 +165,16 @@ export interface Cache {
  */
 export function withReadThroughCache<FT extends (...args: any[]) => any>(
   cache: Cache,
-  cacheRequest: ReadThroughRequest<ReturnType<FT>>
+  cacheRequest: ReadThroughRequest<ReturnType<FT>>,
 ): (...funcArgs: Parameters<FT>) => Promise<ReturnType<FT>> {
   return async (): Promise<ReturnType<FT>> => {
     try {
-      return await cache.readThrough(cacheRequest);
+      return await cache.readThrough(cacheRequest)
     } catch (e) {
       throw new CacheError(
         `Error during read through attempt for read through request for key ${cacheRequest.cacheKey}`,
-        e
-      );
+        e,
+      )
     }
-  };
+  }
 }

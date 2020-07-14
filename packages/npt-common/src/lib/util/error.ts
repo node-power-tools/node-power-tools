@@ -1,7 +1,6 @@
-import { VError } from 'verror';
+import { VError } from 'verror'
 
-export const toErrorStack = (e: Error): string =>
-  `${e.message}\n${VError.fullStack(e)}`;
+export const toErrorStack = (e: Error): string => `${e.message}\n${VError.fullStack(e)}`
 
 /**
  * Base error type
@@ -13,10 +12,10 @@ export abstract class NPTError extends VError {
         name,
         cause,
       },
-      message
-    );
+      message,
+    )
 
-    Error.captureStackTrace(this, this.constructor);
+    Error.captureStackTrace(this, this.constructor)
   }
 }
 
@@ -25,6 +24,6 @@ export abstract class NPTError extends VError {
  */
 export class CacheError extends NPTError {
   constructor(message: string, cause?: Error) {
-    super(CacheError.name, message, cause);
+    super(CacheError.name, message, cause)
   }
 }
