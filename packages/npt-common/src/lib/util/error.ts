@@ -1,4 +1,4 @@
-import VError from 'verror';
+import { VError } from 'verror';
 
 export const toErrorStack = (e: Error): string =>
   `${e.message}\n${VError.fullStack(e)}`;
