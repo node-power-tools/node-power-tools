@@ -1,17 +1,29 @@
-name: CI
-on: [push]
+# Pull Request on master branch
+name: PR Opened
+
+# When a PR is opened to master
+on:
+  pull_request:
+    branches:
+      - master
+    types: [opened, reopened, synchronize]
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # Latest nodes only
+        node-version: [13.x]
 
     steps:
       - name: Begin CI...
         uses: actions/checkout@v2
 
-      - name: Use Node 12
+      - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
-          node-version: 12.x
+          node-version: ${{ matrix.node-version }}
 
       - name: Use cached node_modules
         uses: actions/cache@v1
@@ -20,6 +32,7 @@ jobs:
           key: nodeModules-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             nodeModules-
+
       - name: Install dependencies
         run: yarn install --frozen-lockfile
         env:
