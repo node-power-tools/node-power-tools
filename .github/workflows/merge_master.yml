@@ -34,9 +34,8 @@ jobs:
           GITHUB_AUTH_TOKEN: ${{ secrets.GITHUB_AUTH_TOKEN }}
         run: |
           git checkout master
-          git config user.name "bab2683"
-          git config user.email "barahona.braulio@gmail.com"
-          git remote set-url origin https://bab2683:$GITHUB_AUTH_TOKEN@github.com/bab2683/bab.git
+          git config user.name "bsantare"
+          git remote set-url origin https://bsantare:$GITHUB_AUTH_TOKEN@github.com/bsantare/node-power-tools.git
       - name: Deploy
 #        if: github.event.pull_request.merged == true && contains(github.event.commits[0].message, '[skip-ci]') == false
         env:
@@ -44,4 +43,4 @@ jobs:
           NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
         run: |
           npm config set //registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN
-          npm run lib-publish
+          npm run publish-npt
