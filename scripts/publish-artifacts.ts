@@ -1,7 +1,6 @@
 import { VersioningType } from './getAffected'
 
 import * as cp from 'child_process'
-import { BUILD_DIR, PACKAGES, PACKAGE_JSON } from './constants'
 
 /**
  *
@@ -9,17 +8,17 @@ import { BUILD_DIR, PACKAGES, PACKAGE_JSON } from './constants'
  * @param {VersioningType} type - type of publish to be done: major | minor | patch
  */
 export const deployArtifact = (name: string, type: VersioningType): string => {
-  const currentVersion = require(`../${PACKAGES}/${name}/${PACKAGE_JSON}`).version
+  const currentVersion = require(`../packages/${name}/package.json`).version
 
   console.log(`Processing ${name}:${currentVersion}`)
 
-  const newVersion = cp.execSync(`(cd ${PACKAGES}/${name} && npm version ${type})`).toString().replace('v', '')
+  const newVersion = cp.execSync(`(cd packages/${name} && npm version ${type})`).toString().replace('v', '')
 
   console.log(`Updating ${name}: to version ${newVersion}`)
 
   console.log('Tarring and feathering...')
   const tarFileName = `${name}.tar.gz`
-  cp.execSync(`(cd ${BUILD_DIR}/${name} && tar -cvzf ../../../${tarFileName} ./)`)
+  cp.execSync(`(cd dist/packages/${name} && tar -cvzf ../../../${tarFileName} ./)`)
 
   console.log('Done...\n\n')
 

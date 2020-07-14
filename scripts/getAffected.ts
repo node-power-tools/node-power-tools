@@ -1,7 +1,6 @@
 import { readdirSync } from 'fs'
 
 import { execSync } from 'child_process'
-import { PACKAGES, PACKAGE_JSON } from './constants'
 
 const UNKNOWN = 'unknown'
 const commitTypes = ['feat', 'fix', 'docs', 'perf'] as const
@@ -47,8 +46,8 @@ const isCommitType = (commitType: string | undefined | null): commitType is Comm
 export const getDeployable = (): string[] => {
   const libs = affectedLibs()
   return libs.filter((lib) => {
-    const files = readdirSync(`./${PACKAGES}/${lib}`)
-    return files.indexOf(PACKAGE_JSON) > -1
+    const files = readdirSync(`./packages/${lib}`)
+    return files.indexOf(`package.json`) > -1
   })
 }
 
