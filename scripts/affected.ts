@@ -12,12 +12,14 @@ export type VersioningType = typeof versioningTypes[number]
 /**
  * @returns {Array<string>} Affected libraries
  */
-const affectedLibs = (): string[] => {
-  const result = execSync(`npm run affected:libs --base=remotes/origin/master~1`).toString()
-  const data = result.match(/- (.+)/gm)
+export const affectedLibs = (): string[] => {
+  const result = execSync(`npm run affected:libs -- --base=remotes/origin/master~1`, {
+    encoding: 'utf8',
+  }).toLocaleString()
+  const data = result.match(/(39m|-) +[a-z].*/gim)
   return data
     ? data.map((lib) => {
-        return lib.replace('- ', '')
+        return lib.replace(/(39m|-) /gim, '')
       })
     : []
 }

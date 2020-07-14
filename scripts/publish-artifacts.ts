@@ -1,4 +1,4 @@
-import { VersioningType } from './getAffected'
+import { VersioningType } from './affected'
 
 import * as cp from 'child_process'
 

@@ -1,4 +1,4 @@
-import { getDeployable, publishType } from './getAffected'
+import { getDeployable, publishType } from './affected'
 import { deployArtifact } from './publish-artifacts'
 import { commitUpdates } from './tag'
 
