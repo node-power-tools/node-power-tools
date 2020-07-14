@@ -3,10 +3,10 @@ import { NptLogger } from '@node-power-tools/logging-tools';
 import { IHandyRedis } from 'handy-redis';
 import { mock, mockClear } from 'jest-mock-extended';
 
-import { buildPromise } from '../../../../../test/promise-util';
 import { DEFAULT_CACHE_CONFIGURATION } from '../cache';
 import { buildRegionPrefixedCacheKey, SimpleJsonCodec } from '../cache-codec';
 import { DEFAULT_CACHE_REGION_NAME, RedisCacheImpl } from './redis-cache';
+import { buildPromise } from '@node-power-tools/test-utils';
 
 const mockRedisClient = mock<IHandyRedis>();
 const mockRedisLockFactory = mock<LockFactory>();
