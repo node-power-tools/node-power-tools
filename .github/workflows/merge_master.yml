@@ -15,20 +15,20 @@ jobs:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo "$GITHUB_CONTEXT"
       - name: Checkout
-        if: github.event.pull_request.merged == true && contains(github.event.commits[0].message, '[skip-ci]') == false
+#        if: github.event.pull_request.merged == true && contains(github.event.commits[0].message, '[skip-ci]') == false
         uses: actions/checkout@master
         with:
           ref: master
       - name: Use Node.js ${{ matrix.node-version }}
-        if: github.event.pull_request.merged == true && contains(github.event.commits[0].message, '[skip-ci]') == false
+#        if: github.event.pull_request.merged == true && contains(github.event.commits[0].message, '[skip-ci]') == false
         uses: actions/setup-node@master
         with:
           node-version: ${{ matrix.node-version }}
       - name: Install environment
-        if: github.event.pull_request.merged == true && contains(github.event.commits[0].message, '[skip-ci]') == false
+#        if: github.event.pull_request.merged == true && contains(github.event.commits[0].message, '[skip-ci]') == false
         run: npm install
       - name: Login to github
-        if: github.event.pull_request.merged == true && contains(github.event.commits[0].message, '[skip-ci]') == false
+#        if: github.event.pull_request.merged == true && contains(github.event.commits[0].message, '[skip-ci]') == false
         env:
           CI: true
           GITHUB_AUTH_TOKEN: ${{ secrets.GITHUB_AUTH_TOKEN }}
@@ -38,7 +38,7 @@ jobs:
           git config user.email "barahona.braulio@gmail.com"
           git remote set-url origin https://bab2683:$GITHUB_AUTH_TOKEN@github.com/bab2683/bab.git
       - name: Deploy
-        if: github.event.pull_request.merged == true && contains(github.event.commits[0].message, '[skip-ci]') == false
+#        if: github.event.pull_request.merged == true && contains(github.event.commits[0].message, '[skip-ci]') == false
         env:
           CI: true
           NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
