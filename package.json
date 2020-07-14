@@ -34,7 +34,7 @@
     "help": "nx help",
     "prepush": "run-s affected:lint affected:test",
     "commit": "git-cz",
-    "publish-npt": "yarn ts-node --project scripts/tsconfig.json -r ts-node/register scripts/run.ts"
+    "publish-npt": "ts-node --project scripts/tsconfig.json -r ts-node/register scripts/run.ts"
   },
   "private": false,
   "dependencies": {
@@ -91,6 +91,9 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
   },
   "author": {
     "name": "Brian Santarelli"

@@ -28,7 +28,7 @@ export const deployArtifact = (name: string, type: VersioningType): string => {
   console.log(`Verified ${tb}`)
 
   console.log(`Publishing ${name}:${newVersion}`)
-  cp.execSync(`yarn publish ${tarFileName} --access public`)
+  cp.execSync(`npm publish ${tarFileName} --access public`)
   console.log(`Publishing complete...`)
 
   return `${name}(${newVersion})`
