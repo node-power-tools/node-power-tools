@@ -10,13 +10,9 @@ labels: 'bug'
 
 (Write your answer here.)
 
-### Which terms did you search for in User Guide?
-
-(Write your answer here if relevant.)
-
 ### Environment
 
-(Browser information, etc.)
+(Node version, etc)
 
 ### Steps to reproduce
 

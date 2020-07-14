@@ -1,7 +1,7 @@
 ---
 name: Proposal
 
-about: Suggest an idea for improving the Star Wars RPG Companion
+about: Suggest an idea for improving the Node Power Tools
 
 labels: 'enhancement'
 ---

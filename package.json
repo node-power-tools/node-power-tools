@@ -1,7 +1,14 @@
 {
   "name": "node-power-tools",
-  "version": "0.0.0",
+  "version": "0.0.2",
   "license": "MIT",
+  "keywords": [
+    "redis",
+    "concurrency",
+    "locking",
+    "lock",
+    "mutex"
+  ],
   "scripts": {
     "nx": "nx",
     "start": "nx serve",
@@ -64,11 +71,15 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged && yarn nx run-many --target=lint --all && yarn nx affected --target=test"
+      "pre-commit": "lint-staged",
+      "pre-push": "yarn nx run-many --target=lint --all && yarn nx affected --target=test"
     }
   },
   "lint-staged": {
     "*.{ts,js}": "eslint --fix",
     "*.{ts,js,md,yaml,yml,json}": "prettier --write --config .prettierrc.yml"
+  },
+  "author": {
+    "name": "Brian Santarelli"
   }
 }

@@ -1,42 +1,42 @@
-name: Publish with Lerna
-
-on:
-  push:
-    branches:
-      - master
-
-jobs:
-  Publish_Workflow:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v1.0.0
-
-      - name: Cache node modules
-        uses: actions/cache@v1
-        env:
-          cache-name: cache-node-modules
-        with:
-          path: ~/.npm # npm cache files are stored in `~/.npm` on Linux/macOS
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
-
-      - name: Install dependencies
-        run: yarn
-
-      - name: Build
-        run: yarn build
-
-      - name: Authenticate with Registry
-        run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >>~/.npmrc
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Publish with Lerna
-        run: yarn publish:alpha
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+#name: Publish with Lerna
+#
+#on:
+#  push:
+#    branches:
+#      - master
+#
+#jobs:
+#  Publish_Workflow:
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - name: Checkout repo
+#        uses: actions/checkout@v1.0.0
+#
+#      - name: Cache node modules
+#        uses: actions/cache@v1
+#        env:
+#          cache-name: cache-node-modules
+#        with:
+#          path: ~/.npm # npm cache files are stored in `~/.npm` on Linux/macOS
+#          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/yarn.lock') }}
+#          restore-keys: |
+#            ${{ runner.os }}-build-${{ env.cache-name }}-
+#            ${{ runner.os }}-build-
+#            ${{ runner.os }}-
+#
+#      - name: Install dependencies
+#        run: yarn
+#
+#      - name: Build
+#        run: yarn build
+#
+#      - name: Authenticate with Registry
+#        run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >>~/.npmrc
+#        env:
+#          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+#
+#      - name: Publish with Lerna
+#        run: yarn publish:alpha
+#        env:
+#          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
