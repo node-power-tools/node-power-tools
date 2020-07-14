@@ -43,15 +43,15 @@ jobs:
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo "$GITHUB_CONTEXT"
-      - name: Login to github
-#        if: github.event.pull_request.merged == true && contains(github.event.commits[0].message, '[skip-ci]') == false
-        env:
-          CI: true
-          GITHUB_AUTH_TOKEN: ${{ secrets.GITHUB_AUTH_TOKEN }}
-        run: |
-          git checkout master
-          git config user.name "bsantare"
-          git remote set-url origin https://bsantare:$GITHUB_AUTH_TOKEN@github.com/bsantare/node-power-tools.git
+#      - name: Login to github
+##        if: github.event.pull_request.merged == true && contains(github.event.commits[0].message, '[skip-ci]') == false
+#        env:
+#          CI: true
+#          GITHUB_AUTH_TOKEN: ${{ secrets.GITHUB_AUTH_TOKEN }}
+#        run: |
+#          git checkout master
+#          git config user.name "bsantare"
+#          git remote set-url origin https://bsantare:$GITHUB_AUTH_TOKEN@github.com/bsantare/node-power-tools.git
       - name: Deploy
 #        if: github.event.pull_request.merged == true && contains(github.event.commits[0].message, '[skip-ci]') == false
         env:
