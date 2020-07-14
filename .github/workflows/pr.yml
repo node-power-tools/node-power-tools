@@ -1,12 +1,8 @@
-# Pull Request on master branch
-name: Push CI All
+name: PR CI for affected
 
-# When a PR is opened to master
 on:
-  push:
-    branches:
-      - master
-      - develop
+  pull_request:
+    types: [opened, reopened, synchronize]
 
 jobs:
   build:
@@ -18,6 +14,9 @@ jobs:
     steps:
       - name: Begin CI...
         uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
@@ -32,22 +31,25 @@ jobs:
           restore-keys: |
             nodeModules-
 
+      - name: Fetch current master to compare
+        run: git fetch --no-tags --prune --depth=5 origin master
+
       - name: Install dependencies
         run: yarn install --frozen-lockfile
         env:
           CI: true
 
       - name: Lint
-        run: yarn nx run-many --target=lint --all
+        run: yarn affected:build --base=origin/master
         env:
           CI: true
 
       - name: Test
-        run: yarn nx run-many --target=test --all --ci --coverage --maxWorkers=2
+        run: yarn affected:lint --base=origin/master
         env:
           CI: true
 
       - name: Build
-        run: yarn nx run-many --target=build --all
+        run: yarn affected:lint --base=origin/master
         env:
           CI: true
