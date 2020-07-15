@@ -1,4 +1,4 @@
-name: Merge master
+name: Publish to NPM
 
 on:
   pull_request:
