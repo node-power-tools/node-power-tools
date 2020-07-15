@@ -28,7 +28,7 @@ jobs:
 
       # Run Install
       - name: Install environment
-        run: npm ci # yarn install --frozen-lockfile
+        run: yarn install --frozen-lockfile
 
       - name: Deploy
         env:
