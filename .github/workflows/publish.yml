@@ -2,6 +2,9 @@ name: Publish to NPM
 
 on:
   push:
+    branches:
+      - master
+      - develop
   pull_request:
     branches:
       - master
@@ -19,25 +22,24 @@ jobs:
 
     steps:
       - name: Checkout Code
-        if: github.event.pull_request.merged == true && contains(github.event.commits[0].message, '[skip-ci]') == false
+        if: contains(github.event.commits[0].message, '[skip-ci]') == false
         uses: actions/checkout@v2
         with:
-          ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
 
       - name: Use Node.js ${{ matrix.node-version }}
-        if: github.event.pull_request.merged == true && contains(github.event.commits[0].message, '[skip-ci]') == false
+        if: contains(github.event.commits[0].message, '[skip-ci]') == false
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
           registry-url: https://registry.npmjs.org/
 
       - name: Fetch other branches
-        if: github.event.pull_request.merged == true && contains(github.event.commits[0].message, '[skip-ci]') == false
+        if: contains(github.event.commits[0].message, '[skip-ci]') == false
         run: git fetch --no-tags --prune --depth=5 origin master
 
       - name: Use cached node_modules
-        if: github.event.pull_request.merged == true && contains(github.event.commits[0].message, '[skip-ci]') == false
+        if: contains(github.event.commits[0].message, '[skip-ci]') == false
         uses: actions/cache@v1
         with:
           path: node_modules
@@ -46,7 +48,7 @@ jobs:
             nodeModules-
 
       - name: Install dependencies
-        if: github.event.pull_request.merged == true && contains(github.event.commits[0].message, '[skip-ci]') == false
+        if: contains(github.event.commits[0].message, '[skip-ci]') == false
         run: |
           npm install -g yarn
           yarn install --frozen-lockfile
@@ -54,13 +56,13 @@ jobs:
           CI: true
 
       - name: Extract branch name
-        if: github.event.pull_request.merged == true && contains(github.event.commits[0].message, '[skip-ci]') == false
+        if: contains(github.event.commits[0].message, '[skip-ci]') == false
         shell: bash
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
         id: extract_branch
 
       - name: Deploy
-        if: github.event.pull_request.merged == true && contains(github.event.commits[0].message, '[skip-ci]') == false
+        if: contains(github.event.commits[0].message, '[skip-ci]') == false
         env:
           CURRENT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
           NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
@@ -69,7 +71,7 @@ jobs:
           ./.github/scripts/publish-packages.sh
 
       - name: Commit files
-        if: github.event.pull_request.merged == true && contains(github.event.commits[0].message, '[skip-ci]') == false
+        if: contains(github.event.commits[0].message, '[skip-ci]') == false
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
@@ -77,7 +79,7 @@ jobs:
           git commit -m "Release [skip-ci]" -a || true
 
       - name: Push changes
-        if: github.event.pull_request.merged == true && contains(github.event.commits[0].message, '[skip-ci]') == false
+        if: contains(github.event.commits[0].message, '[skip-ci]') == false
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.ACTION_AUTH_TOKEN }}
