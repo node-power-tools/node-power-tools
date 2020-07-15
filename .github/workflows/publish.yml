@@ -81,6 +81,7 @@ jobs:
         if: contains(github.event.commits[0].message, '[skip-ci]') == false
         uses: ad-m/github-push-action@master
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.ACTION_AUTH_TOKEN }}
+          branch: ${{ steps.extract_branch.outputs.branch }}
           tags: true
           force: true
