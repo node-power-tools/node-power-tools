@@ -1,6 +1,11 @@
-name: Publish
+name: Merge master
 
-on: [push]
+on:
+  pull_request:
+    branches:
+      - master
+      - develop
+    types: [closed]
 
 jobs:
   publish:
@@ -13,45 +18,35 @@ jobs:
 
     steps:
       - name: Checkout Code
+        if: github.event.pull_request.merged == true && contains(github.event.commits[0].message, '[skip-ci]') == false
         uses: actions/checkout@v2
-        with:
-          ref: ${{ github.event.push.head.ref }}
-          fetch-depth: 0
 
-      - name: Fetch other branches
-        run: |
-          git fetch --no-tags --prune --depth=5 origin master
-
-      # Setup node
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-          registry-url: https://registry.npmjs.org/
-
-      # Run Install
-      - name: Install environment
-        run: |
-          npm install -g yarn
-          yarn install --frozen-lockfile
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
 
       - name: Deploy
+        if: github.event.pull_request.merged == true && contains(github.event.commits[0].message, '[skip-ci]') == false
         env:
+          CURRENT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
           NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
         run: |
           npm config set //registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN
           ./.github/scripts/publish-packages.sh
 
       - name: Commit files
+        if: github.event.pull_request.merged == true && contains(github.event.commits[0].message, '[skip-ci]') == false
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add .
           git commit -m "Release [skip-ci]" -a || true
 
-#      - name: Push changes
-#        uses: ad-m/github-push-action@master
-#        with:
-#          github_token: ${{ secrets.ACTION_AUTH_TOKEN }}
-#          tags: true
-#          force: true
+      - name: Push changes
+        if: github.event.pull_request.merged == true && contains(github.event.commits[0].message, '[skip-ci]') == false
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.ACTION_AUTH_TOKEN }}
+          tags: true
+          force: true
