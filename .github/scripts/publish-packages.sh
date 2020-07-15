@@ -1,4 +1,6 @@
-#!/usr/bin/env bash
+#!/bin/bash
+cd "$(dirname "$0")/../../"
+
 set -o errexit -o noclobber -o nounset -o pipefail
 set -e
 set -x
@@ -38,7 +40,7 @@ if [[ "$AFFECTED" != "" ]]; then
     else
       echo "Setting version for $lib"
       cd "$PARENT_DIR"
-      cd "$ROOT_DIR/packages/${lib/-//}"
+      cd "$ROOT_DIR/packages/${lib}"
       npm version "$RELEASE_TYPE" -f -m "NPT $RELEASE_TYPE"
       echo "Building $lib"
       cd "$PARENT_DIR"
@@ -51,7 +53,7 @@ if [[ "$AFFECTED" != "" ]]; then
   while IFS= read -r -d $' ' lib; do
     if [[ "$DRY_RUN" == "False" || "$IGNORE" != *"$lib"* ]]; then
       echo "Publishing $lib"
-      npm publish "$ROOT_DIR/dist/libs/${lib/-//}" --access=public
+      npm publish "$ROOT_DIR/dist/libs/${lib}" --access=public
     else
       echo "Dry Run, not publishing $lib"
     fi
