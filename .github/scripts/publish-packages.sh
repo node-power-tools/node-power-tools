@@ -26,7 +26,7 @@ if [[ "$IGNORE" != "" ]]; then
   echo "Ignoring: $IGNORE"
 fi
 
-AFFECTED=$(node node_modules/.bin/nx affected:libs --plain --base=origin/master~1)
+AFFECTED=$(node node_modules/.bin/nx affected:libs --plain --base=remotes/origin/master --head=HEAD)
 if [[ "$AFFECTED" != "" ]]; then
   cd "$PARENT_DIR"
   echo "Copy Environment Files"
