@@ -28,13 +28,12 @@ if [[ "$IGNORE" != "" ]]; then
   echo "Ignoring: $IGNORE"
 fi
 
-AFFECTED=$(yarn affected:build --base=origin/master --head=HEAD)
+AFFECTED=$(npm run affected:libs -- --base=master)
 if [[ "$AFFECTED" != "" ]]; then
   cd "$PARENT_DIR"
   echo "Copy Environment Files"
 
   while IFS= read -r -d $' ' lib; do
-
     if [[ "$IGNORE" == *"$lib"* ]]; then
       echo "Skipping $lib"
     else
