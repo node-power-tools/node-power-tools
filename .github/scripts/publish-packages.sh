@@ -21,14 +21,14 @@ PARENT_DIR="$PWD"
 ROOT_DIR="."
 COMMIT_MESSAGE="$(git log -1 --pretty=format:"%s")"
 RELEASE_TYPE=${1:-$(getBuildType "$COMMIT_MESSAGE")}
-DRY_RUN=${DRY_RUN:-"True"}
+DRY_RUN=${DRY_RUN:-"False"}
 
 IGNORE=$(echo "$COMMIT_MESSAGE" | sed -nE "s/^.*\[ignore:(.+)\]$/\1/p")
 if [[ "$IGNORE" != "" ]]; then
   echo "Ignoring: $IGNORE"
 fi
 
-AFFECTED=$(npm run affected:libs -- --base=master)
+AFFECTED=$(yarn --silent affected:libs -- --base=master --plain)
 if [[ "$AFFECTED" != "" ]]; then
   cd "$PARENT_DIR"
   echo "Copy Environment Files"
