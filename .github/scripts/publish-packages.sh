@@ -30,7 +30,7 @@ if [[ "$IGNORE" != "" ]]; then
   echo "Ignoring: $IGNORE"
 fi
 git fetch --no-tags --prune --depth=5 origin master
-AFFECTED=$(yarn --silent affected:libs -- --base=master --plain)
+AFFECTED=$(yarn nx affected:libs --base=origin/master~1 --head=origin/master)
 if [[ "$AFFECTED" != "" ]]; then
   cd "$PARENT_DIR"
   echo "Copy Environment Files"
