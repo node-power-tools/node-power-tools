@@ -5,7 +5,6 @@ on:
     branches:
       - master
       - develop
-    types: [opened, reopened, synchronize]
 
 jobs:
   build:
@@ -13,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [13.x, 12.x, 10.x]
+        node-version: [13.x]
 
     steps:
       - uses: actions/checkout@v2
