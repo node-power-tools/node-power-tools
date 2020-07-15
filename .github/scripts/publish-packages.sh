@@ -29,7 +29,7 @@ IGNORE=$(echo "$COMMIT_MESSAGE" | sed -nE "s/^.*\[ignore:(.+)\]$/\1/p")
 if [[ "$IGNORE" != "" ]]; then
   echo "Ignoring: $IGNORE"
 fi
-
+git fetch --no-tags --prune --depth=5 origin master
 AFFECTED=$(yarn --silent affected:libs -- --base=master --plain)
 if [[ "$AFFECTED" != "" ]]; then
   cd "$PARENT_DIR"
