@@ -33,8 +33,7 @@
     "dep-graph": "nx dep-graph",
     "help": "nx help",
     "prepush": "run-s affected:lint affected:test",
-    "commit": "git-cz",
-    "publish-npt": "ts-node --project scripts/tsconfig.json -r ts-node/register scripts/run.ts"
+    "commit": "git-cz"
   },
   "private": false,
   "dependencies": {
