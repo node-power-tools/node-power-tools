@@ -1,0 +1,52 @@
+name: Publish
+
+on: [push]
+
+jobs:
+  publish:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [13.x]
+
+    steps:
+      # Checkout code
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Fetch other branches
+        run: git fetch --no-tags --prune --depth=5 origin master
+
+      # Setup node
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+          registry-url: https://registry.npmjs.org/
+
+      # Run Install
+      - name: Install environment
+        run: npm ci # yarn install --frozen-lockfile
+
+      - name: Deploy
+        env:
+          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+        run: |
+          npm config set //registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN
+          ./.github/scripts/publish-libraries.sh
+
+      - name: Commit files
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -m "Release [skip-ci]" -a || true
+
+#      - name: Push changes
+#        uses: ad-m/github-push-action@master
+#        with:
+#          github_token: ${{ secrets.ACTION_AUTH_TOKEN }}
+#          tags: true
+#          force: true

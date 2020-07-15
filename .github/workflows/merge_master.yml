@@ -1,13 +1,17 @@
 name: Merge Master
 
-on: [push]
+on:
+  pull_request:
+    branches:
+      - master
+    types: [closed]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [12.x]
+        node-version: [13.x]
 
     steps:
       - name: Begin CI...
@@ -16,6 +20,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
+          registry-url: https://registry.npmjs.org/
       - name: Use cached node_modules
         uses: actions/cache@v1
         with:
@@ -24,7 +29,9 @@ jobs:
           restore-keys: |
             nodeModules-
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: |
+          npm install -g yarn
+          yarn install --frozen-lockfile
         env:
           CI: true
       - name: Lint
@@ -35,28 +42,4 @@ jobs:
         run: yarn nx run-many --target=test --all --ci --coverage --maxWorkers=2
         env:
           CI: true
-      - name: Build
-        run: yarn nx run-many --target=build --all
-        env:
-          CI: true
-      - name: Print GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
-#      - name: Login to github
-##        if: github.event.pull_request.merged == true && contains(github.event.commits[0].message, '[skip-ci]') == false
-#        env:
-#          CI: true
-#          GITHUB_AUTH_TOKEN: ${{ secrets.GITHUB_AUTH_TOKEN }}
-#        run: |
-#          git checkout master
-#          git config user.name "bsantare"
-#          git remote set-url origin https://bsantare:$GITHUB_AUTH_TOKEN@github.com/bsantare/node-power-tools.git
-      - name: Deploy
-#        if: github.event.pull_request.merged == true && contains(github.event.commits[0].message, '[skip-ci]') == false
-        env:
-          CI: true
-          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
-        run: |
-          npm config set //registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN
-          npm run publish-npt
+
