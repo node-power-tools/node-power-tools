@@ -1,0 +1,83 @@
+name: Publish to NPM
+
+on:
+  pull_request:
+    branches:
+      - master
+      - develop
+    types: [closed]
+
+jobs:
+  publish:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [13.x]
+
+    steps:
+      - name: Checkout Code
+        if: contains(github.event.commits[0].message, '[skip-ci]') == false
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        if: contains(github.event.commits[0].message, '[skip-ci]') == false
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Fetch other branches
+        if: contains(github.event.commits[0].message, '[skip-ci]') == false
+        run: git fetch --no-tags --prune --depth=5 origin master
+
+      - name: Use cached node_modules
+        if: contains(github.event.commits[0].message, '[skip-ci]') == false
+        uses: actions/cache@v1
+        with:
+          path: node_modules
+          key: nodeModules-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            nodeModules-
+
+      - name: Install dependencies
+        if: contains(github.event.commits[0].message, '[skip-ci]') == false
+        run: |
+          npm install -g yarn
+          yarn install --frozen-lockfile
+        env:
+          CI: true
+
+      - name: Extract branch name
+        if: contains(github.event.commits[0].message, '[skip-ci]') == false
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
+
+      - name: Deploy
+        if: contains(github.event.commits[0].message, '[skip-ci]') == false
+        env:
+          CURRENT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
+          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+        run: |
+          npm config set //registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN
+          ./.github/scripts/publish-packages.sh
+
+      - name: Commit files
+        if: contains(github.event.commits[0].message, '[skip-ci]') == false
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -m "Release [skip-ci]" -a || true
+
+      - name: Push changes
+        if: contains(github.event.commits[0].message, '[skip-ci]') == false
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.ACTION_AUTH_TOKEN }}
+          branch: ${{ steps.extract_branch.outputs.branch }}
+          tags: true
+          force: true

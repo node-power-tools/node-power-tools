@@ -1,29 +1,36 @@
-# Pull Request on master branch
-name: PR Opened
+name: PR workflow
 
-# When a PR is opened to master
 on:
+  push:
+    branches:
+      - '!master'
   pull_request:
+    types: [assigned, opened, synchronize, reopened]
     branches:
       - master
-    types: [opened, reopened, synchronize]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     strategy:
       matrix:
-        # Latest nodes only
-        node-version: [10.x, 12.x, 13.x]
+        node-version: [13.x]
 
     steps:
-      - name: Begin CI...
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
+          registry-url: https://registry.npmjs.org/
+
+      - name: Fetch other branches
+        run: git fetch --no-tags --prune --depth=5 origin master
 
       - name: Use cached node_modules
         uses: actions/cache@v1
@@ -34,21 +41,19 @@ jobs:
             nodeModules-
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: |
+          npm install -g yarn
+          yarn install --frozen-lockfile
         env:
           CI: true
 
       - name: Lint
-        run: yarn nx run-many --target=lint --all
+        run: yarn affected:lint -- --base="origin/master"
         env:
           CI: true
 
       - name: Test
-        run: yarn nx run-many --target=test --all --ci --coverage --maxWorkers=2
+        run: affected:test -- --base="origin/master"
         env:
           CI: true
 
-      - name: Build
-        run: yarn nx run-many --target=build --all
-        env:
-          CI: true
