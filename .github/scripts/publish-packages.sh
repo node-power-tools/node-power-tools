@@ -33,7 +33,7 @@ IGNORE=$(echo "$COMMIT_MESSAGE" | sed -nE "s/^.*\[ignore:(.+)\]$/\1/p")
 if [[ "$IGNORE" != "" ]]; then
   echo "Ignoring: $IGNORE"
 fi
-AFFECTED=$(node node_modules/.bin/nx affected:libs --plain --base=origin/"$CURRENT_BRANCH"~1)
+AFFECTED=$(node node_modules/.bin/nx affected:libs --plain --base=origin/master)
 if [[ "$AFFECTED" != "" ]]; then
   cd "$PARENT_DIR"
   echo "Copy Environment Files"
