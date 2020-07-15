@@ -19,6 +19,8 @@ getBuildType() {
 
 PARENT_DIR="$PWD"
 ROOT_DIR="."
+PACKAGES_DIR="$ROOT_DIR/packages"
+BUILD_DIR="$ROOT_DIR/dist/packages"
 COMMIT_MESSAGE="$(git log -1 --pretty=format:"%s")"
 RELEASE_TYPE=${1:-$(getBuildType "$COMMIT_MESSAGE")}
 DRY_RUN=${DRY_RUN:-"False"}
@@ -39,11 +41,11 @@ if [[ "$AFFECTED" != "" ]]; then
     else
       echo "Setting version for $lib"
       cd "$PARENT_DIR"
-      cd "$ROOT_DIR/packages/${lib}"
+      cd "$PACKAGES_DIR/${lib}"
       npm version "$RELEASE_TYPE" -f -m "NPT $RELEASE_TYPE"
       echo "Building $lib"
       cd "$PARENT_DIR"
-      npm run build "$lib" -- --prod --with-deps
+      yarn --silent run build "$lib" -- --prod --with-deps
       wait
     fi
   done <<<"$AFFECTED " # leave space on end to generate correct output
@@ -52,7 +54,7 @@ if [[ "$AFFECTED" != "" ]]; then
   while IFS= read -r -d $' ' lib; do
     if [[ "$DRY_RUN" == "False" || "$IGNORE" != *"$lib"* ]]; then
       echo "Publishing $lib"
-      npm publish "$ROOT_DIR/dist/libs/${lib}" --access=public
+      npm publish "$BUILD_DIR/${lib}" --access=public
     else
       echo "Dry Run, not publishing $lib"
     fi
