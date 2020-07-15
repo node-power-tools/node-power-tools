@@ -12,12 +12,15 @@ jobs:
         node-version: [13.x]
 
     steps:
-      # Checkout code
       - name: Checkout Code
         uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
 
       - name: Fetch other branches
-        run: git fetch --no-tags --prune --depth=5 origin master
+        run: |
+          git fetch --no-tags --prune --depth=5 origin master
 
       # Setup node
       - name: Use Node.js ${{ matrix.node-version }}
@@ -28,7 +31,9 @@ jobs:
 
       # Run Install
       - name: Install environment
-        run: yarn install --frozen-lockfile
+        run: |
+          npm install -g yarn
+          yarn install --frozen-lockfile
 
       - name: Deploy
         env:
