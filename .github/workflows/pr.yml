@@ -2,11 +2,12 @@ name: PR workflow
 
 on:
   push:
+    branches:
+      - '!master'
   pull_request:
     types: [assigned, opened, synchronize, reopened]
     branches:
       - master
-      - develop
 
 jobs:
   build:
