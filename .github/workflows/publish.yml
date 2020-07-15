@@ -32,7 +32,6 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-          registry-url: https://registry.npmjs.org/
 
       - name: Fetch other branches
         if: contains(github.event.commits[0].message, '[skip-ci]') == false
