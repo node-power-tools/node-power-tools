@@ -35,7 +35,7 @@ jobs:
           NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
         run: |
           npm config set //registry.npmjs.org/:_authToken=$NPM_AUTH_TOKEN
-          ./.github/scripts/publish-libraries.sh
+          ./.github/scripts/publish-packages.sh
 
       - name: Commit files
         run: |
